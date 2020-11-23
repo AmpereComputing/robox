@@ -21,13 +21,16 @@
 #include "anbox/wm/manager.h"
 #include "anbox/wm/window_state.h"
 #include "anbox/logger.h"
-#include "anbox/rotation_status.h"
 
 #if defined(Status)
 #undef Status
 #endif // defined(Status)
 
 #include "anbox_bridge.pb.h"
+
+#ifdef USE_PROTOBUF_CALLBACK_HEADER
+#include <google/protobuf/stubs/callback.h>
+#endif
 
 namespace anbox {
 namespace bridge {
@@ -76,13 +79,12 @@ void PlatformApiSkeleton::handle_window_state_update_event(const anbox::protobuf
   auto convert_window_state = [](
       const ::anbox::protobuf::bridge::WindowStateUpdateEvent_WindowState
           &window) {
-    set_rotation_status(window.rotation_angle());
     return wm::WindowState(
         wm::Display::Id(window.display_id()), window.has_surface(),
         graphics::Rect(window.frame_left(), window.frame_top(),
                        window.frame_right(), window.frame_bottom()),
         window.package_name(), wm::Task::Id(window.task_id()),
-        wm::Stack::Id(window.stack_id()), window.rotation_angle());
+        wm::Stack::Id(window.stack_id()));
   };
 
   wm::WindowState::List updated;

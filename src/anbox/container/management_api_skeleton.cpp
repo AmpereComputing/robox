@@ -25,6 +25,10 @@
 #include "anbox_container.pb.h"
 #include "anbox_rpc.pb.h"
 
+#ifdef USE_PROTOBUF_CALLBACK_HEADER
+#include <google/protobuf/stubs/callback.h>
+#endif
+
 namespace anbox {
 namespace container {
 ManagementApiSkeleton::ManagementApiSkeleton(
@@ -37,6 +41,8 @@ ManagementApiSkeleton::~ManagementApiSkeleton() {}
 void ManagementApiSkeleton::start_container(
     anbox::protobuf::container::StartContainer const *request,
     anbox::protobuf::rpc::Void *response, google::protobuf::Closure *done) {
+  DEBUG("");
+
   if (container_->state() == Container::State::running) {
     response->set_error("Container is already running");
     done->Run();
@@ -48,8 +54,17 @@ void ManagementApiSkeleton::start_container(
   const auto configuration = request->configuration();
   for (int n = 0; n < configuration.bind_mounts_size(); n++) {
     const auto bind_mount = configuration.bind_mounts(n);
-    container_configuration.bind_mounts.insert(
-        {bind_mount.source(), bind_mount.target()});
+    container_configuration.bind_mounts.insert({bind_mount.source(), bind_mount.target()});
+  }
+
+  for (int n = 0; n < configuration.devices_size(); n++) {
+    const auto device = configuration.devices(n);
+    container_configuration.devices.insert({device.path(), {device.permission()}});
+  }
+
+  for (int n = 0; n < configuration.extra_properties_size(); n++) {
+    const auto prop = configuration.extra_properties(n);
+    container_configuration.extra_properties.push_back(prop);
   }
 
   try {

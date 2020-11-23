@@ -76,6 +76,7 @@ Credentials BaseSocketMessenger<stream_protocol>::creds() const {
 template <typename stream_protocol>
 ssize_t BaseSocketMessenger<stream_protocol>::send_raw(char const* data,
                                                        size_t length) {
+
   std::unique_lock<std::mutex> lg(message_lock);
   return ::send(socket_fd, data, length, MSG_NOSIGNAL);
 }
@@ -83,10 +84,12 @@ ssize_t BaseSocketMessenger<stream_protocol>::send_raw(char const* data,
 template <typename stream_protocol>
 void BaseSocketMessenger<stream_protocol>::send(char const* data,
                                                 size_t length) {
+
   for (;;) {
     try {
       std::unique_lock<std::mutex> lg(message_lock);
-      ba::write(*socket, ba::buffer(data, length), boost::asio::transfer_all());
+      ba::write(*socket, ba::buffer(data, length),
+                boost::asio::transfer_all());
     } catch (const boost::system::system_error& err) {
       if (err.code() == boost::asio::error::try_again) continue;
       throw;
@@ -131,7 +134,7 @@ unsigned short BaseSocketMessenger<stream_protocol>::local_port() const {
 
 template <typename stream_protocol>
 void BaseSocketMessenger<stream_protocol>::set_no_delay() {
-  const auto fd = socket->native();
+  const auto fd = socket->native_handle();
   int flag = 1;
   const auto ret =
       ::setsockopt(fd, IPPROTO_TCP, TCP_NODELAY,

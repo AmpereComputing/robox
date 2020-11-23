@@ -64,7 +64,6 @@ void PlatformApiStub::update_window_state(const WindowStateUpdate &state) {
         out->set_frame_bottom(in.frame.bottom);
         out->set_task_id(in.task_id);
         out->set_stack_id(in.stack_id);
-        out->set_rotation_angle(in.rotation_angle);
     };
 
     for (const auto &window : state.updated_windows) {
@@ -100,7 +99,8 @@ void PlatformApiStub::update_application_list(const ApplicationListUpdate &updat
             *c = category;
         }
 
-        app->set_icon(a.icon.data(), a.icon.size());
+        if (a.icon.size() > 0)
+          app->set_icon(a.icon.data(), a.icon.size());
     }
 
     for (const auto &package : update.removed_applications) {

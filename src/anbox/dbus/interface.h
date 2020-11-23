@@ -17,80 +17,42 @@
 
 #ifndef ANBOX_DBUS_INTERFACE_H_
 #define ANBOX_DBUS_INTERFACE_H_
-
-#include <core/dbus/macros.h>
-#include <core/dbus/property.h>
-
-#include <chrono>
-#include <string>
-
 #include "anbox/system_configuration.h"
 
 namespace anbox {
 namespace dbus {
 namespace interface {
 struct Service {
-  static inline std::string path() { return "/"; }
-  static inline std::string name() {
+  static inline const char* path() { return "/org/anbox"; }
+  static inline const char* name() {
     static std::string id = SystemConfiguration::instance().container_name();
-    std::string str;
+    std::string str = "org.anbox";
     if (!id.empty())
-      str = "org.anbox." + id;
-    else
-      str = "org.anbox";
-    return str;
+      str = str.append(id);
+    return str.c_str();
   }
 };
 struct ApplicationManager {
-  static inline std::string name() {
+  static inline const char* name() {
     static std::string id = SystemConfiguration::instance().container_name();
-    std::string str;
+    std::string str = "org.anbox.ApplicationManager";
     if (!id.empty())
-      str = "org.anbox.ApplicationManager" + id;
-    else
-      str = "org.anbox.ApplicationManager";
-    return str;
+      str = str.append(id);
+    return str.c_str();
   }
-
-struct Methods {
-    struct Launch {
-      static inline std::string name() { return "Launch"; }
-      typedef anbox::dbus::interface::ApplicationManager Interface;
-      typedef void ResultType;
-      static inline std::chrono::milliseconds default_timeout() {
-        return std::chrono::seconds{60};
-      }
-    };
+  struct Methods {
+      struct Launch {
+        static inline const char* name() { return "Launch"; }
+      };
   };
   struct Properties {
-    DBUS_CPP_READABLE_PROPERTY_DEF(Ready, ApplicationManager, bool)
+    struct Ready {
+      static inline const char* name() { return "Ready"; }
+    };
   };
 };
 }  // namespace interface
 }  // namespace dbus
 }  // namespace anbox
-
-namespace core {
-namespace dbus {
-namespace traits {
-template <>
-struct Service<anbox::dbus::interface::ApplicationManager> {
-  static inline const std::string& interface_name() {
-    static const std::string s{"org.anbox.ApplicationManager"};
-    return s;
-/*
-    static std::string id = SystemConfiguration::instance().container_name();
-    std::string str;
-    if (!id.empty())
-      str = "org.anbox.ApplicationManager" + id;
-    else
-      str = "org.anbox.ApplicationManager";
-    return str;
-*/
-  }
-};
-}  // namespace traits
-}  // namespace dbus
-}  // namespace core
 
 #endif

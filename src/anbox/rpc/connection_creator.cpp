@@ -35,8 +35,8 @@ ConnectionCreator::ConnectionCreator(const std::shared_ptr<Runtime>& rt,
       message_processor_factory_(factory) {}
 
 ConnectionCreator::~ConnectionCreator() noexcept {
-  if (connection_)
-    connections_->remove(connection_->id());
+    if (connection_)
+        connections_->remove(connection_->id());
 }
 
 void ConnectionCreator::create_connection_for(

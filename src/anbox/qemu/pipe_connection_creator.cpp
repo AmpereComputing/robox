@@ -18,8 +18,6 @@
 #include <string>
 
 #include "anbox/graphics/opengles_message_processor.h"
-#include "anbox/sensors/sensors_manager.h"
-#include "anbox/sensors/sensors_message_processor.h"
 #include "anbox/logger.h"
 #include "anbox/network/local_socket_messenger.h"
 #include "anbox/qemu/adb_message_processor.h"
@@ -31,6 +29,7 @@
 #include "anbox/qemu/hwcontrol_message_processor.h"
 #include "anbox/qemu/null_message_processor.h"
 #include "anbox/qemu/pipe_connection_creator.h"
+#include "anbox/qemu/sensors_message_processor.h"
 
 namespace ba = boost::asio;
 
@@ -66,12 +65,9 @@ std::string client_type_to_string(
 }
 namespace anbox {
 namespace qemu {
-PipeConnectionCreator::PipeConnectionCreator(const std::shared_ptr<Renderer> &renderer,
-					     const std::shared_ptr<Runtime> &rt,
-					     const std::shared_ptr<sensors::SensorsManager> &sensors)
+PipeConnectionCreator::PipeConnectionCreator(const std::shared_ptr<Renderer> &renderer, const std::shared_ptr<Runtime> &rt)
     : renderer_(renderer),
       runtime_(rt),
-      sensors_(sensors),
       next_connection_id_(0),
       connections_(
           std::make_shared<network::Connections<network::SocketConnection>>()) {
@@ -151,7 +147,7 @@ PipeConnectionCreator::create_processor(
   else if (type == client_type::qemud_hw_control)
     return std::make_shared<qemu::HwControlMessageProcessor>(messenger);
   else if (type == client_type::qemud_sensors)
-    return std::make_shared<sensors::SensorsMessageProcessor>(sensors_, messenger);
+    return std::make_shared<qemu::SensorsMessageProcessor>(messenger);
   else if (type == client_type::qemud_camera)
     return std::make_shared<qemu::CameraMessageProcessor>(messenger);
   else if (type == client_type::qemud_fingerprint)

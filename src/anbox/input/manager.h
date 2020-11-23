@@ -20,7 +20,6 @@
 
 #include <map>
 #include <memory>
-#include <vector>
 
 namespace anbox {
 class Runtime;
@@ -39,10 +38,6 @@ class Manager {
 
   std::shared_ptr<Runtime> runtime_;
   std::map<std::uint32_t, std::shared_ptr<Device>> devices_;
-
-  std::string inputdir_;
-  std::string instancedir_;
-  std::vector<std::string> files_;
 };
 }  // namespace input
 }  // namespace anbox

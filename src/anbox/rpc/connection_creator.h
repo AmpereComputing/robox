@@ -54,7 +54,6 @@ class ConnectionCreator
   std::shared_ptr<network::Connections<network::SocketConnection>> const
       connections_;
   MessageProcessorFactory message_processor_factory_;
-
   std::shared_ptr<network::SocketConnection> connection_;
 };
 }  // namespace rpc

@@ -1,0 +1,681 @@
+diff -urN original/patchoat/Android.mk new/art/patchoat/Android.mk
+--- original/art/patchoat/Android.mk	2019-04-29 11:00:08.167072003 +0800
++++ new/art/patchoat/Android.mk	2019-04-29 10:52:23.955059783 +0800
+@@ -23,7 +23,9 @@
+ 
+ # TODO: Remove this when the framework (installd) supports pushing the
+ # right instruction-set parameter for the primary architecture.
+-ifneq ($(filter ro.zygote=zygote64,$(PRODUCT_DEFAULT_PROPERTY_OVERRIDES)),)
++ifeq ($(WITH_EXAGEAR),true)
++  patchoat_arch := 64
++else ifneq ($(filter ro.zygote=zygote64,$(PRODUCT_DEFAULT_PROPERTY_OVERRIDES)),)
+   patchoat_arch := 64
+ else
+   patchoat_arch := 32
+diff -urN original/art/profman/Android.mk new/art/profman/Android.mk
+--- original/art/profman/Android.mk	2019-04-29 11:00:08.167072003 +0800
++++ new/art/profman/Android.mk	2019-04-29 10:52:23.955059783 +0800
+@@ -24,7 +24,9 @@
+ 
+ # TODO: Remove this when the framework (installd) supports pushing the
+ # right instruction-set parameter for the primary architecture.
+-ifneq ($(filter ro.zygote=zygote64,$(PRODUCT_DEFAULT_PROPERTY_OVERRIDES)),)
++ifeq ($(WITH_EXAGEAR),true)
++  profman_arch := 64
++else ifneq ($(filter ro.zygote=zygote64,$(PRODUCT_DEFAULT_PROPERTY_OVERRIDES)),)
+   profman_arch := 64
+ else
+   profman_arch := 32
+diff -urN original/bionic/linker/Android.mk new/bionic/linker/Android.mk
+--- original/bionic/linker/Android.mk	2019-04-29 11:04:46.739079336 +0800
++++ new/bionic/linker/Android.mk	2019-04-29 11:05:24.427080328 +0800
+@@ -54,6 +54,10 @@
+ LOCAL_CPPFLAGS += -DTARGET_IS_64_BIT
+ endif
+ 
++ifeq ($(WITH_EXAGEAR),true)
++  LOCAL_CFLAGS += -DWITH_EXAGEAR
++endif
++
+ # We need to access Bionic private headers in the linker.
+ LOCAL_CFLAGS += -I$(LOCAL_PATH)/../libc/
+ 
+diff -urN original/bionic/linker/debugger.cpp new/bionic/linker/debugger.cpp
+--- original/bionic/linker/debugger.cpp	2019-04-29 11:04:46.739079336 +0800
++++ new/bionic/linker/debugger.cpp	2019-04-29 11:05:24.427080328 +0800
+@@ -65,11 +65,44 @@
+ // Message sent over the socket.
+ // NOTE: Any changes to this structure must also be reflected in
+ //       system/core/include/cutils/debugger.h.
++#ifdef WITH_EXAGEAR
++#if defined(__arm__) || defined(__aarch64__)
++struct arm_sigcontext {
++  uint32_t trap_no;
++  uint32_t error_code;
++  uint32_t oldmask;
++  uint32_t arm_r0;
++  uint32_t arm_r1;
++  uint32_t arm_r2;
++  uint32_t arm_r3;
++  uint32_t arm_r4;
++  uint32_t arm_r5;
++  uint32_t arm_r6;
++  uint32_t arm_r7;
++  uint32_t arm_r8;
++  uint32_t arm_r9;
++  uint32_t arm_r10;
++  uint32_t arm_fp;
++  uint32_t arm_ip;
++  uint32_t arm_sp;
++  uint32_t arm_lr;
++  uint32_t arm_pc;
++  uint32_t arm_cpsr;
++  uint32_t fault_address;
++};
++#endif
++#endif
++
+ struct __attribute__((packed)) debugger_msg_t {
+   int32_t action;
+   pid_t tid;
+   uint64_t abort_msg_address;
+   int32_t original_si_code;
++#ifdef WITH_EXAGEAR
++#if defined(__arm__) || defined(__aarch64__)
++  arm_sigcontext origin_sig_context;
++#endif
++#endif
+ };
+ 
+ // see man(2) prctl, specifically the section about PR_GET_NAME
+@@ -205,7 +238,7 @@
+   return result;
+ }
+ 
+-static void send_debuggerd_packet(siginfo_t* info) {
++static void send_debuggerd_packet(siginfo_t* info, void* uc) {
+   // Mutex to prevent multiple crashing threads from trying to talk
+   // to debuggerd at the same time.
+   static pthread_mutex_t crash_mutex = PTHREAD_MUTEX_INITIALIZER;
+@@ -239,6 +272,11 @@
+   msg.tid = gettid();
+   msg.abort_msg_address = reinterpret_cast<uintptr_t>(g_abort_message);
+   msg.original_si_code = (info != nullptr) ? info->si_code : 0;
++  if (uc != NULL) {
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++    memcpy(&msg.origin_sig_context, &(reinterpret_cast<ucontext_t *>(uc))->uc_mcontext, sizeof(arm_sigcontext));
++#endif
++  }
+   ret = TEMP_FAILURE_RETRY(write(s, &msg, sizeof(msg)));
+   if (ret == sizeof(msg)) {
+     char debuggerd_ack;
+@@ -259,7 +297,7 @@
+  * Catches fatal signals so we can ask debuggerd to ptrace us before
+  * we crash.
+  */
+-static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void*) {
++static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* uc) {
+   // It's possible somebody cleared the SA_SIGINFO flag, which would mean
+   // our "info" arg holds an undefined value.
+   if (!have_siginfo(signal_number)) {
+@@ -268,7 +306,7 @@
+ 
+   log_signal_summary(signal_number, info);
+ 
+-  send_debuggerd_packet(info);
++  send_debuggerd_packet(info, uc);
+ 
+   // We need to return from the signal handler so that debuggerd can dump the
+   // thread that crashed, but returning here does not guarantee that the signal
+diff -urN originali/dalvik/dexdump/Android.mk new/dalvik/dexdump/Android.mk
+--- original/dalvik/dexdump/Android.mk	2019-04-29 11:11:45.535090361 +0800
++++ new/dalvik/dexdump/Android.mk	2019-04-29 11:12:07.263090933 +0800
+@@ -43,7 +43,9 @@
+ LOCAL_SHARED_LIBRARIES := libz liblog libutils
+ LOCAL_STATIC_LIBRARIES := $(dexdump_static_libraries_sdk)
+ LOCAL_LDLIBS +=
++ifneq ($(WITH_EXAGEAR),true)
+ LOCAL_32_BIT_ONLY := true
++endif
+ include $(BUILD_EXECUTABLE)
+ 
+ endif # !SDK_ONLY
+diff -urN original/dalvik/libdex/Android.mk new/dalvik/libdex/Android.mk
+--- original/dalvik/libdex/Android.mk	2019-04-29 11:11:45.575090362 +0800
++++ new/dalvik/libdex/Android.mk	2019-04-29 11:12:07.475090939 +0800
+@@ -55,7 +55,9 @@
+ LOCAL_SHARED_LIBRARIES := libutils
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_MODULE := libdex
++ifneq ($(WITH_EXAGEAR),true)
+ LOCAL_32_BIT_ONLY := true
++endif
+ include $(BUILD_STATIC_LIBRARY)
+ 
+ endif # !SDK_ONLY
+diff -urN original/external/libunwind/Android.mk new/external/libunwind/Android.mk
+--- original/external/libunwind/Android.mk	2019-04-29 11:15:05.863095634 +0800
++++ new/external/libunwind/Android.mk	2019-04-29 11:15:31.931096321 +0800
+@@ -250,6 +250,11 @@
+ libunwind_module := libunwind
+ libunwind_module_tag := optional
+ libunwind_build_type := target
++
++ifeq ($(WITH_EXAGEAR),true)
++libunwind_cflags_target += -DWITH_EXAGEAR
++endif
++
+ libunwind_build_target := SHARED_LIBRARY
+ include $(LOCAL_PATH)/Android.build.mk
+ libunwind_build_type := host
+diff -urN original/external/libunwind/src/arm/Gregs.c new/external/libunwind/src/arm/Gregs.c
+--- original/external/libunwind/src/arm/Gregs.c	2019-04-29 11:15:05.867095635 +0800
++++ new/external/libunwind/src/arm/Gregs.c	2019-04-29 11:15:31.847096318 +0800
+@@ -46,16 +46,34 @@
+     case UNW_ARM_R11:
+     case UNW_ARM_R12:
+     case UNW_ARM_R14:
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++      loc = c->dwarf.loc[reg - UNW_ARM_R0];
++      break;
++#endif
+     case UNW_ARM_R15:
+       loc = c->dwarf.loc[reg - UNW_ARM_R0];
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++      if (write) {
++        c->dwarf.ip = *valp;
++        return 0;
++      }
++#endif
+       break;
+ 
+     case UNW_ARM_R13:
+     case UNW_ARM_CFA:
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++      loc = c->dwarf.loc[reg - UNW_ARM_R0];
++      if (write) {
++        c->dwarf.cfa = *valp;
++      }
++      break;
++#else
+       if (write)
+         return -UNW_EREADONLYREG;
+       *valp = c->dwarf.cfa;
+       return 0;
++#endif
+ 
+     /* FIXME: Initialise coprocessor & shadow registers?  */
+ 
+diff -urN original/frameworks/base/core/jni/Android.mk new/frameworks/base/core/jni/Android.mk
+--- original/frameworks/base/core/jni/Android.mk	2019-04-29 11:18:01.339100254 +0800
++++ new/frameworks/base/core/jni/Android.mk	2019-04-29 11:18:43.911101374 +0800
+@@ -28,6 +28,10 @@
+ 
+ LOCAL_CFLAGS += -DU_USING_ICU_NAMESPACE=0
+ 
++ifeq ($(WITH_EXAGEAR),true)
++  LOCAL_CFLAGS += -DWITH_EXAGEAR
++endif
++
+ LOCAL_SRC_FILES:= \
+     AndroidRuntime.cpp \
+     com_android_internal_content_NativeLibraryHelper.cpp \
+diff -urN original/frameworks/base/core/jni/fd_utils-inl.h new/frameworks/base/core/jni/fd_utils-inl.h
+--- original/frameworks/base/core/jni/fd_utils-inl.h	2019-04-29 11:18:01.347100254 +0800
++++ new/frameworks/base/core/jni/fd_utils-inl.h	2019-04-29 11:18:43.911101374 +0800
+@@ -55,6 +55,7 @@
+   "/dev/urandom",
+   "/dev/ion",
+   "/dev/dri/renderD129", // Fixes b/31172436
++  "/system/bin/app_process32",
+ };
+ 
+ static const char* kFdPath = "/proc/self/fd";
+@@ -573,6 +574,15 @@
+       return -1;
+     }
+ 
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++    // Ignore any file descriptors that are above the hard limit. These are
++    // internal descriptors used by Exagear.
++    struct rlimit rlim;
++    if (getrlimit(RLIMIT_NOFILE, &rlim) == 0 && (rlim_t)fd >= rlim.rlim_max) {
++      return -1;
++    }
++#endif
++
+     return fd;
+   }
+ 
+diff -urN original/system/core/debuggerd/Android.mk new/system/core/debuggerd/Android.mk
+--- original/system/core/debuggerd/Android.mk	2019-04-29 11:32:37.191123310 +0800
++++ new/system/core/debuggerd/Android.mk	2019-04-29 11:33:10.247124180 +0800
+@@ -35,6 +35,10 @@
+ LOCAL_CPPFLAGS += -DTARGET_IS_64_BIT
+ endif
+ 
++ifeq ($(WITH_EXAGEAR),true)
++LOCAL_CPPFLAGS += -DWITH_EXAGEAR
++endif
++
+ LOCAL_SHARED_LIBRARIES := \
+     libbacktrace \
+     libbase \
+diff -urN original/system/core/debuggerd/arm/machine.cpp new/system/core/debuggerd/arm/machine.cpp
+--- original/system/core/debuggerd/arm/machine.cpp	2019-04-29 11:32:37.195123310 +0800
++++ new/system/core/debuggerd/arm/machine.cpp	2019-04-29 11:33:10.235124180 +0800
+@@ -48,12 +48,24 @@
+   }
+ }
+ 
++#ifdef WITH_EXAGEAR
++void dump_registers(log_t* log, pid_t tid, sigcontext *osc) {
++#else
+ void dump_registers(log_t* log, pid_t tid) {
++#endif
+   pt_regs r;
++#if defined(WITH_EXAGEAR)
++  if (osc) {
++    for (int i = 0; i < 16; i++) {
++      r.uregs[i] = *(&(osc->arm_r0) + i);
++    }
++  }
++#else
+   if (ptrace(PTRACE_GETREGS, tid, 0, &r)) {
+     ALOGE("cannot get registers: %s\n", strerror(errno));
+     return;
+   }
++#endif
+ 
+   _LOG(log, logtype::REGISTERS, "    r0 %08x  r1 %08x  r2 %08x  r3 %08x\n",
+        static_cast<uint32_t>(r.ARM_r0), static_cast<uint32_t>(r.ARM_r1),
+diff -urN original/system/core/debuggerd/debuggerd.cpp new/system/core/debuggerd/debuggerd.cpp
+--- original/system/core/debuggerd/debuggerd.cpp	2019-04-29 11:32:37.191123310 +0800
++++ new/system/core/debuggerd/debuggerd.cpp	2019-04-29 11:33:10.247124180 +0800
+@@ -72,6 +72,11 @@
+   uid_t uid, gid;
+   uintptr_t abort_msg_address;
+   int32_t original_si_code;
++#ifdef WITH_EXAGEAR
++#if defined(__arm__) || defined(__aarch64__)
++  arm_sigcontext origin_sig_context;
++#endif
++#endif
+ };
+ 
+ static void wait_for_user_action(const debugger_request_t& request) {
+@@ -234,6 +239,11 @@
+   out_request->gid = cr.gid;
+   out_request->abort_msg_address = msg.abort_msg_address;
+   out_request->original_si_code = msg.original_si_code;
++#ifdef WITH_EXAGEAR
++#if defined(__arm__) || defined(__aarch64__)
++  memcpy(&out_request->origin_sig_context, &msg.origin_sig_context, sizeof(arm_sigcontext));
++#endif
++#endif
+ 
+   if (msg.action == DEBUGGER_ACTION_CRASH) {
+     // Ensure that the tid reported by the crashing process is valid.
+@@ -500,7 +510,11 @@
+         if (request.action == DEBUGGER_ACTION_DUMP_TOMBSTONE) {
+           ALOGV("debuggerd: stopped -- dumping to tombstone");
+           engrave_tombstone(tombstone_fd, backtrace_map, request.pid, request.tid, siblings, signal,
+-                            request.original_si_code, request.abort_msg_address, amfd_data);
++                            request.original_si_code, request.abort_msg_address, amfd_data
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++                            , (struct sigcontext *)&request.origin_sig_context
++#endif
++            );
+         } else if (request.action == DEBUGGER_ACTION_DUMP_BACKTRACE) {
+           ALOGV("debuggerd: stopped -- dumping to fd");
+           dump_backtrace(fd, backtrace_map, request.pid, request.tid, siblings, nullptr);
+@@ -527,7 +541,11 @@
+         ALOGV("stopped -- fatal signal\n");
+         *crash_signal = signal;
+         engrave_tombstone(tombstone_fd, backtrace_map, request.pid, request.tid, siblings, signal,
+-                          request.original_si_code, request.abort_msg_address, amfd_data);
++                          request.original_si_code, request.abort_msg_address, amfd_data
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++                          , (struct sigcontext *)&request.origin_sig_context
++#endif
++          );
+         break;
+ 
+       default:
+@@ -919,6 +937,12 @@
+ }
+ 
+ int main(int argc, char** argv) {
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++  // Exagear disabled the ptrace() system call by default because it causes issues
++  // in some applications. Re-enable it here because we know what we are doing.
++  syscall(0x3436584d, 1, 1);
++#endif
++
+   union selinux_callback cb;
+   if (argc == 1) {
+     cb.func_audit = audit_callback;
+diff -urN original/system/core/debuggerd/machine.h new/system/core/debuggerd/machine.h
+--- original/system/core/debuggerd/machine.h	2019-04-29 11:32:37.195123310 +0800
++++ new/system/core/debuggerd/machine.h	2019-04-29 11:33:10.247124180 +0800
+@@ -24,6 +24,10 @@
+ #include "utility.h"
+ 
+ void dump_memory_and_code(log_t* log, Backtrace* backtrace);
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++void dump_registers(log_t* log, pid_t tid, sigcontext *osc);
++#else
+ void dump_registers(log_t* log, pid_t tid);
++#endif
+ 
+ #endif // _DEBUGGERD_MACHINE_H
+diff -urN original/system/core/debuggerd/tombstone.cpp new/system/core/debuggerd/tombstone.cpp
+--- original/system/core/debuggerd/tombstone.cpp	2019-04-29 11:32:37.195123310 +0800
++++ new/system/core/debuggerd/tombstone.cpp	2019-04-29 11:33:10.247124180 +0800
+@@ -445,8 +445,13 @@
+   }
+ }
+ 
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++static void dump_thread(log_t* log, pid_t pid, pid_t tid, BacktraceMap* map, int signal,
++                        int si_code, uintptr_t abort_msg_address, bool primary_thread, sigcontext *osc) {
++#else
+ static void dump_thread(log_t* log, pid_t pid, pid_t tid, BacktraceMap* map, int signal,
+                         int si_code, uintptr_t abort_msg_address, bool primary_thread) {
++#endif
+   log->current_tid = tid;
+   if (!primary_thread) {
+     _LOG(log, logtype::THREAD, "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---\n");
+@@ -461,8 +466,22 @@
+   if (primary_thread) {
+     dump_abort_message(backtrace.get(), log, abort_msg_address);
+   }
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++  dump_registers(log, tid, osc);
++#else
+   dump_registers(log, tid);
+-  if (backtrace->Unwind(0)) {
++#endif
++
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++  ucontext_t context;
++  bzero (&context, sizeof(ucontext_t));
++
++  ucontext_t *pContext = &context;
++  context.uc_mcontext = *((mcontext_t *)osc);
++  if (backtrace->Unwind(0, pContext)) {
++#else
++    if (backtrace->Unwind(0)) {
++#endif
+     dump_backtrace_and_stack(backtrace.get(), log);
+   } else {
+     ALOGE("Unwind failed: pid = %d, tid = %d", pid, tid);
+@@ -607,7 +626,11 @@
+ // Dumps all information about the specified pid to the tombstone.
+ static void dump_crash(log_t* log, BacktraceMap* map, pid_t pid, pid_t tid,
+                        const std::set<pid_t>& siblings, int signal, int si_code,
+-                       uintptr_t abort_msg_address) {
++                       uintptr_t abort_msg_address
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++                       , sigcontext *origin_sig_context
++#endif
++) {
+   // don't copy log messages to tombstone unless this is a dev device
+   char value[PROPERTY_VALUE_MAX];
+   property_get("ro.debuggable", value, "0");
+@@ -616,15 +639,21 @@
+   _LOG(log, logtype::HEADER,
+        "*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***\n");
+   dump_header_info(log);
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++  dump_thread(log, pid, tid, map, signal, si_code, abort_msg_address, true, origin_sig_context);
++#else
+   dump_thread(log, pid, tid, map, signal, si_code, abort_msg_address, true);
++#endif
+   if (want_logs) {
+     dump_logs(log, pid, 5);
+   }
+ 
+   if (!siblings.empty()) {
++#if !(defined(WITH_EXAGEAR) && defined(__arm__))
+     for (pid_t sibling : siblings) {
+       dump_thread(log, pid, sibling, map, 0, 0, 0, false);
+     }
++#endif
+   }
+ 
+   if (want_logs) {
+@@ -687,7 +716,11 @@
+ 
+ void engrave_tombstone(int tombstone_fd, BacktraceMap* map, pid_t pid, pid_t tid,
+                        const std::set<pid_t>& siblings, int signal, int original_si_code,
+-                       uintptr_t abort_msg_address, std::string* amfd_data) {
++                       uintptr_t abort_msg_address, std::string* amfd_data
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++                       , sigcontext *origin_sig_context
++#endif
++) {
+   log_t log;
+   log.current_tid = tid;
+   log.crashed_tid = tid;
+@@ -699,5 +732,9 @@
+ 
+   log.tfd = tombstone_fd;
+   log.amfd_data = amfd_data;
+-  dump_crash(&log, map, pid, tid, siblings, signal, original_si_code, abort_msg_address);
++  dump_crash(&log, map, pid, tid, siblings, signal, original_si_code, abort_msg_address
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++             , origin_sig_context
++#endif
++    );
+ }
+diff -urN original/system/core/debuggerd/tombstone.h new/system/core/debuggerd/tombstone.h
+--- original/system/core/debuggerd/tombstone.h	2019-04-29 11:32:37.195123310 +0800
++++ new/system/core/debuggerd/tombstone.h	2019-04-29 11:33:10.247124180 +0800
+@@ -34,6 +34,10 @@
+ /* Creates a tombstone file and writes the crash dump to it. */
+ void engrave_tombstone(int tombstone_fd, BacktraceMap* map, pid_t pid, pid_t tid,
+                        const std::set<pid_t>& siblings, int signal, int original_si_code,
+-                       uintptr_t abort_msg_address, std::string* amfd_data);
++                       uintptr_t abort_msg_address, std::string* amfd_data
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++                       , sigcontext *osc
++#endif
++);
+ 
+ #endif // _DEBUGGERD_TOMBSTONE_H
+diff -urN original/system/core/include/cutils/debugger.h new/system/core/include/cutils/debugger.h
+--- original/system/core/include/cutils/debugger.h	2019-04-29 11:32:37.199123310 +0800
++++ new/system/core/include/cutils/debugger.h	2019-04-29 11:33:10.271124181 +0800
+@@ -39,11 +39,44 @@
+ // is the same for 32 bit and 64 bit processes.
+ // NOTE: Any changes to this structure must also be reflected in
+ //       bionic/linker/debugger.cpp.
++#ifdef WITH_EXAGEAR
++#if defined(__arm__) || defined(__aarch64__)
++struct arm_sigcontext {
++    uint32_t trap_no;
++    uint32_t error_code;
++    uint32_t oldmask;
++    uint32_t arm_r0;
++    uint32_t arm_r1;
++    uint32_t arm_r2;
++    uint32_t arm_r3;
++    uint32_t arm_r4;
++    uint32_t arm_r5;
++    uint32_t arm_r6;
++    uint32_t arm_r7;
++    uint32_t arm_r8;
++    uint32_t arm_r9;
++    uint32_t arm_r10;
++    uint32_t arm_fp;
++    uint32_t arm_ip;
++    uint32_t arm_sp;
++    uint32_t arm_lr;
++    uint32_t arm_pc;
++    uint32_t arm_cpsr;
++    uint32_t fault_address;
++};
++#endif
++#endif
++
+ typedef struct __attribute__((packed)) {
+     int32_t action;
+     pid_t tid;
+     uint64_t abort_msg_address;
+     int32_t original_si_code;
++#ifdef WITH_EXAGEAR
++#if defined(__arm__) || defined(__aarch64__)
++    struct arm_sigcontext origin_sig_context;
++#endif
++#endif
+ } debugger_msg_t;
+ 
+ /* Dumps a process backtrace, registers, and stack to a tombstone file (requires root).
+diff -urN original/system/core/libbacktrace/Android.mk new/system/core/libbacktrace/Android.mk
+--- original/system/core/libbacktrace/Android.mk	2019-04-29 11:32:37.203123310 +0800
++++ new/system/core/libbacktrace/Android.mk	2019-04-29 11:33:10.287124181 +0800
+@@ -67,6 +67,11 @@
+ module_tag := optional
+ build_type := target
+ build_target := SHARED_LIBRARY
++
++ifeq ($(WITH_EXAGEAR),true)
++libbacktrace_cflags_target += -DWITH_EXAGEAR
++endif
++
+ include $(LOCAL_PATH)/Android.build.mk
+ build_type := host
+ libbacktrace_multilib := both
+diff -urN original/system/core/libbacktrace/UnwindPtrace.cpp new/system/core/libbacktrace/UnwindPtrace.cpp
+--- original/system/core/libbacktrace/UnwindPtrace.cpp	2019-04-29 11:32:37.207123311 +0800
++++ new/system/core/libbacktrace/UnwindPtrace.cpp	2019-04-29 11:33:10.287124181 +0800
+@@ -56,11 +56,13 @@
+ 
+   error_ = BACKTRACE_UNWIND_NO_ERROR;
+ 
++#if !(defined(WITH_EXAGEAR) && defined(__arm__))
+   if (ucontext) {
+     BACK_LOGW("Unwinding from a specified context not supported yet.");
+     error_ = BACKTRACE_UNWIND_ERROR_UNSUPPORTED_OPERATION;
+     return false;
+   }
++#endif
+ 
+   addr_space_ = unw_create_addr_space(&_UPT_accessors, 0);
+   if (!addr_space_) {
+@@ -87,6 +89,18 @@
+     return false;
+   }
+ 
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++  unsigned int orig_regs[16] = {0};
++  if (ucontext) {
++    for (int i = 0; i < 16; i++) {
++      unw_get_reg(&cursor, i, &(orig_regs[i]));
++    }
++    for (int i = 0; i < 16; i++) {
++      unw_set_reg(&cursor, i, *(&(ucontext->uc_mcontext.arm_r0) + i));
++    }
++  }
++#endif
++
+   size_t num_frames = 0;
+   do {
+     unw_word_t pc;
+@@ -126,6 +140,20 @@
+     ret = unw_step (&cursor);
+   } while (ret > 0 && num_frames < MAX_BACKTRACE_FRAMES);
+ 
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++  if (ucontext) {
++    unw_addr_space_t addr_space = unw_create_addr_space(&_UPT_accessors, 0);
++
++    UnwindMap* map = static_cast<UnwindMap*>(GetMap());
++    unw_map_set(addr_space, map->GetMapCursor());
++    struct UPT_info* upt_info = reinterpret_cast<struct UPT_info*>(_UPT_create(Tid()));
++    unw_cursor_t cursor;
++    unw_init_remote(&cursor, addr_space, upt_info);
++    for (int i = 0; i < 16; i++) {
++      unw_set_reg(&cursor, i, orig_regs[i]);
++    }
++  }
++#endif
+   return true;
+ }
+ 
+diff -urN original/system/sepolicy/file.te new/system/sepolicy/file.te
+--- original/system/sepolicy/file.te	2019-04-29 11:36:47.879129909 +0800
++++ new/system/sepolicy/file.te	2019-04-29 11:37:13.907130595 +0800
+@@ -259,3 +259,5 @@
+ # Should be:
+ #   type apk_data_file, file_type, data_file_type;
+ neverallow fs_type file_type:filesystem associate;
++
++type exagear_debug_file, file_type, data_file_type, mlstrustedobject;
+diff -urN original/system/sepolicy/te_macros new/system/sepolicy/te_macros
+--- original/system/sepolicy/te_macros	2019-04-29 11:36:47.879129909 +0800
++++ new/system/sepolicy/te_macros	2019-04-29 11:37:13.907130595 +0800
+@@ -77,7 +77,7 @@
+ define(`tmpfs_domain', `
+ type $1_tmpfs, file_type;
+ type_transition $1 tmpfs:file $1_tmpfs;
+-allow $1 $1_tmpfs:file { read write };
++allow $1 $1_tmpfs:file { read write getattr open ioctl };
+ ')
+ 
+ #####################################
+diff -urN original/system/sepolicy/untrusted_app.te new/system/sepolicy/untrusted_app.te
+--- original/system/sepolicy/untrusted_app.te	2019-04-29 11:36:47.879129909 +0800
++++ new/system/sepolicy/untrusted_app.te	2019-04-29 11:37:13.907130595 +0800
+@@ -197,6 +197,7 @@
+   userdebug_or_eng(`
+     -method_trace_data_file # only on ro.debuggable=1
+     -coredump_file          # userdebug/eng only
++    -exagear_debug_file       # userdebug/eng only
+   ')
+ }:dir_file_class_set { create unlink };
+
+diff -urN original/libcore/NativeCode.mk new/libcore/NativeCode.mk
+--- original/libcore/NativeCode.mk	2019-04-29 11:36:47.879129909 +0800
++++ new/libcore/NativeCode.mk	2019-04-29 11:37:13.907130595 +0800
+@@ -126,6 +126,9 @@ endif
+ 
+ # Define the rules.
+ LOCAL_CFLAGS += $(openjdk_cflags)
++ifeq ($(WITH_EXAGEAR),true)
++  LOCAL_CFLAGS += -DWITH_EXAGEAR
++endif
+ LOCAL_SRC_FILES := $(openjdk_core_src_files)
+ LOCAL_C_INCLUDES := $(core_c_includes)
+ LOCAL_SHARED_LIBRARIES := $(core_shared_libraries) libcrypto libicuuc libssl libz
+diff -urN original/libcore/ojluni/src/main/native/UNIXProcess_md.c new/libcore/ojluni/src/main/native/UNIXProcess_md.c
+--- original/libcore/ojluni/src/main/native/UNIXProcess_md.c	2019-04-29 11:36:47.879129909 +0800
++++ new/libcore/ojluni/src/main/native/UNIXProcess_md.c	2019-04-29 11:37:13.907130595 +0800
+@@ -105,6 +105,10 @@
+ 
+ #define START_CHILD_USE_CLONE 0  /* clone() currently disabled; see above. */
+ 
++#if defined(WITH_EXAGEAR) && defined(__arm__)
++  #define START_CHILD_USE_VFORK 0
++#endif
++
+ #ifndef START_CHILD_USE_CLONE
+   #ifdef __linux__
+     #define START_CHILD_USE_CLONE 1
+@@ -520,6 +524,7 @@ debugPrint(char *format, ...)
+ }
+ #endif /* DEBUG_PROCESS */
+ 
++#if !(defined(WITH_EXAGEAR) && defined(__arm__))
+ /**
+  * Exec FILE as a traditional Bourne shell script (i.e. one without #!).
+  * If we could do it over again, we would probably not support such an ancient
+@@ -544,6 +549,7 @@ execve_as_traditional_shell_script(const char *file,
+     memmove(argv+1, argv+2, (end-argv) * sizeof (*end));
+     argv[0] = argv0;
+ }
++#endif
+ 
+ /**
+  * Like execve(2), except that in case of ENOEXEC, FILE is assumed to

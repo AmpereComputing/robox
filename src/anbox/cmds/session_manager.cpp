@@ -28,16 +28,12 @@
 #include "anbox/bridge/platform_api_skeleton.h"
 #include "anbox/bridge/platform_message_processor.h"
 #include "anbox/graphics/gl_renderer_server.h"
-#include "anbox/sensors/sensors_manager.h"
-
-namespace {
-std::istream& operator>>(std::istream& in, anbox::graphics::GLRendererServer::Config::Driver& driver);
-}
 
 #include "anbox/cmds/session_manager.h"
 #include "anbox/common/dispatcher.h"
 #include "anbox/system_configuration.h"
 #include "anbox/container/client.h"
+#include "anbox/dbus/bus.h"
 #include "anbox/dbus/skeleton/service.h"
 #include "anbox/input/manager.h"
 #include "anbox/logger.h"
@@ -54,8 +50,6 @@ std::istream& operator>>(std::istream& in, anbox::graphics::GLRendererServer::Co
 
 #include <sys/prctl.h>
 
-#include <core/dbus/asio/executor.h>
-#include <core/dbus/bus.h>
 #pragma GCC diagnostic pop
 
 namespace fs = boost::filesystem;
@@ -76,17 +70,6 @@ class NullConnectionCreator : public anbox::network::ConnectionCreator<
     socket->close();
   }
 };
-
-std::istream& operator>>(std::istream& in, anbox::graphics::GLRendererServer::Config::Driver& driver) {
-  std::string str(std::istreambuf_iterator<char>(in), {});
-  if (str.empty() || str == "translator")
-    driver = anbox::graphics::GLRendererServer::Config::Driver::Translator;
-  else if (str == "host")
-    driver = anbox::graphics::GLRendererServer::Config::Driver::Host;
-  else
-   BOOST_THROW_EXCEPTION(std::runtime_error("Invalid GLES driver value provided"));
-  return in;
-}
 }
 
 void anbox::cmds::SessionManager::launch_appmgr_if_needed(const std::shared_ptr<bridge::AndroidApiStub> &android_api_stub) {
@@ -104,7 +87,6 @@ void anbox::cmds::SessionManager::launch_appmgr_if_needed(const std::shared_ptr<
 anbox::cmds::SessionManager::SessionManager()
     : CommandWithFlagsAndAction{cli::Name{"session-manager"}, cli::Usage{"session-manager"},
                                 cli::Description{"Run the the anbox session manager"}},
-      gles_driver_(graphics::GLRendererServer::Config::Driver::Host),
       window_size_(default_single_window_size) {
   // Just for the purpose to allow QtMir (or unity8) to find this on our
   // /proc/*/cmdline
@@ -112,9 +94,6 @@ anbox::cmds::SessionManager::SessionManager()
   flag(cli::make_flag(cli::Name{"desktop_file_hint"},
                       cli::Description{"Desktop file hint for QtMir/Unity8"},
                       desktop_file_hint_));
-  flag(cli::make_flag(cli::Name{"gles-driver"},
-                      cli::Description{"Which GLES driver to use. Possible values are 'host' or'translator'"},
-                      gles_driver_));
   flag(cli::make_flag(cli::Name{"single-window"},
                       cli::Description{"Start in single window mode."},
                       single_window_));
@@ -133,13 +112,18 @@ anbox::cmds::SessionManager::SessionManager()
   flag(cli::make_flag(cli::Name{"use-system-dbus"},
                       cli::Description{"Use system instead of session DBus"},
                       use_system_dbus_));
+  flag(cli::make_flag(cli::Name{"software-rendering"},
+                      cli::Description{"Use software rendering instead of hardware accelerated GL rendering"},
+                      use_software_rendering_));
+  flag(cli::make_flag(cli::Name{"no-touch-emulation"},
+                      cli::Description{"Disable touch emulation applied on mouse inputs"},
+                      no_touch_emulation_));
 
   action([this](const cli::Command::Context &) {
     auto trap = core::posix::trap_signals_for_process(
         {core::posix::Signal::sig_term, core::posix::Signal::sig_int});
     trap->signal_raised().connect([this, trap](const core::posix::Signal &signal) {
       INFO("Signal %i received. Good night.", static_cast<int>(signal));
-
       qemu_pipe_connector_.reset();
       platform_->unset_window_manager();
       platform_->unset_renderer();
@@ -158,13 +142,11 @@ anbox::cmds::SessionManager::SessionManager()
       id = "/dev/binder" + id;
       bindername = id.c_str();
     }
-
     if (!fs::exists(bindername) || !fs::exists("/dev/ashmem")) {
       ERROR("Failed to start as either binder or ashmem kernel drivers are not loaded");
       return EXIT_FAILURE;
     }
-
-    if (!container_id_.empty())
+   if (!container_id_.empty())
       SystemConfiguration::instance().set_container_id(container_id_, false);
 
     utils::ensure_paths({
@@ -178,23 +160,30 @@ anbox::cmds::SessionManager::SessionManager()
     if (!standalone_) {
       container_ = std::make_shared<container::Client>(rt);
       container_->register_terminate_handler([&]() {
-	  WARNING("Lost connection to container manager, terminating.");
-	  trap->stop();
-	});
+        WARNING("Lost connection to container manager, terminating.");
+        trap->stop();
+      });
     }
 
     auto input_manager = std::make_shared<input::Manager>(rt);
-
     auto android_api_stub = std::make_shared<bridge::AndroidApiStub>();
 
     auto display_frame = graphics::Rect::Invalid;
     if (single_window_)
       display_frame = window_size_;
 
+    const auto should_enable_touch_emulation = utils::get_env_value("ANBOX_ENABLE_TOUCH_EMULATION", "true");
+    if (should_enable_touch_emulation == "false" || no_touch_emulation_)
+      no_touch_emulation_ = true;
+
+    platform::Configuration platform_config;
+    platform_config.single_window = single_window_;
+    platform_config.no_touch_emulation = no_touch_emulation_;
+    platform_config.display_frame = display_frame;
+
     platform_ = platform::create(utils::get_env_value("ANBOX_PLATFORM", "sdl"),
-				 input_manager,
-				 display_frame,
-				 single_window_);
+                                     input_manager,
+                                     platform_config);
     if (!platform_)
       return EXIT_FAILURE;
 
@@ -209,8 +198,16 @@ anbox::cmds::SessionManager::SessionManager()
       using_single_window = true;
     }
 
-    auto gl_server = std::make_shared<graphics::GLRendererServer>(
-          graphics::GLRendererServer::Config{gles_driver_, single_window_}, window_manager);
+    const auto should_force_software_rendering = utils::get_env_value("ANBOX_FORCE_SOFTWARE_RENDERING", "false");
+    auto gl_driver = graphics::GLRendererServer::Config::Driver::Host;
+    if (should_force_software_rendering == "true" || use_software_rendering_)
+     gl_driver = graphics::GLRendererServer::Config::Driver::Software;
+
+    graphics::GLRendererServer::Config renderer_config {
+      gl_driver,
+      single_window_
+    };
+    auto gl_server = std::make_shared<graphics::GLRendererServer>(renderer_config, window_manager);
 
     platform_->set_window_manager(window_manager);
     platform_->set_renderer(gl_server->renderer());
@@ -229,15 +226,12 @@ anbox::cmds::SessionManager::SessionManager()
 
     const auto socket_path = SystemConfiguration::instance().socket_dir();
 
-    sensors_ = sensors::SensorsManager::create();
-
     // The qemu pipe is used as a very fast communication channel between guest
     // and host for things like the GLES emulation/translation, the RIL or ADB.
     qemu_pipe_connector_ =
         std::make_shared<network::PublishedSocketConnector>(
             utils::string_format("%s/qemu_pipe", socket_path), rt,
-            std::make_shared<qemu::PipeConnectionCreator>(
-                gl_server->renderer(), rt, sensors_));
+            std::make_shared<qemu::PipeConnectionCreator>(gl_server->renderer(), rt));
 
     boost::asio::deadline_timer appmgr_start_timer(rt->service());
 
@@ -271,28 +265,41 @@ anbox::cmds::SessionManager::SessionManager()
             }));
 
     container::Configuration container_configuration;
+
+    // Instruct healthd to fake battery level as it may take it from other connected
+    // devices like mouse or keyboard and will incorrectly show a system popup to
+    // shutdown the Android system because of low battery. This prevents any kind of
+    // input as focus is bound to the system popup exclusively.
+    //
+    // See https://github.com/anbox/anbox/issues/780 for further details.
+    container_configuration.extra_properties.push_back("ro.boot.fake_battery=1");
+
     if (!standalone_) {
       container_configuration.bind_mounts = {
         {qemu_pipe_connector_->socket_file(), "/dev/qemu_pipe"},
         {bridge_connector->socket_file(), "/dev/anbox_bridge"},
         {audio_server->socket_file(), "/dev/anbox_audio"},
         {SystemConfiguration::instance().input_device_dir(), "/dev/input"},
-        {"/dev/binder", "/dev/binder"},
-        {"/dev/ashmem", "/dev/ashmem"},
-        {"/dev/fuse", "/dev/fuse"},
+
       };
 
-      dispatcher->dispatch([&]() { container_->start(container_configuration); });
+      container_configuration.devices = {
+        {"/dev/fuse", {0666}},
+      };
+
+      dispatcher->dispatch([&]() {
+        container_->start(container_configuration);
+      });
     }
 
-    auto bus_type = core::dbus::WellKnownBus::session;
+    auto bus_type = anbox::dbus::Bus::Type::Session;
     if (use_system_dbus_)
-        bus_type = core::dbus::WellKnownBus::system;
-
-    auto bus = std::make_shared<core::dbus::Bus>(bus_type);
-    bus->install_executor(core::dbus::asio::make_executor(bus, rt->service()));
+      bus_type = anbox::dbus::Bus::Type::System;
+    auto bus = std::make_shared<anbox::dbus::Bus>(bus_type);
 
     auto skeleton = anbox::dbus::skeleton::Service::create_for_bus(bus, app_manager);
+
+    bus->run_async();
 
     rt->start();
     trap->run();

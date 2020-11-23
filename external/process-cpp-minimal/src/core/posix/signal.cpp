@@ -155,7 +155,7 @@ public:
             {
                 auto result = ::read(scope.signal_fd, signal_info, sizeof(signal_info));
 
-                for (uint i = 0; i < result / sizeof(signalfd_siginfo); i++)
+                for (unsigned int i = 0; i < result / sizeof(signalfd_siginfo); i++)
                 {
                     if (has(static_cast<core::posix::Signal>(signal_info[i].ssi_signo)))
                     {
@@ -204,7 +204,7 @@ private:
 }
 
 std::shared_ptr<core::posix::SignalTrap> core::posix::trap_signals_for_process(
-        std::initializer_list<core::posix::Signal> blocked_signals)
+	std::initializer_list<core::posix::Signal> blocked_signals)
 {
     return std::make_shared<impl::SignalTrap>(
                 impl::SignalTrap::Scope::process,

@@ -18,13 +18,21 @@
 #ifndef ANBOX_CONTAINER_CONFIGURATION_H_
 #define ANBOX_CONTAINER_CONFIGURATION_H_
 
-#include <map>
 #include <string>
+#include <vector>
+#include <unordered_map>
 
 namespace anbox {
 namespace container {
+struct DeviceSpecification {
+  uint32_t permission;
+  std::string old_device_name = "";
+};
+
 struct Configuration {
-  std::map<std::string, std::string> bind_mounts;
+  std::unordered_map<std::string, std::string> bind_mounts;
+  std::unordered_map<std::string, DeviceSpecification> devices;
+  std::vector<std::string> extra_properties;
 };
 }  // namespace container
 }  // namespace anbox
