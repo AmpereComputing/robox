@@ -1,0 +1,6 @@
+# Create directories for Exagear-generated core dumps and log files
+on post-fs-data
+    mkdir /data/exagear 0640
+    mkdir /data/exagear/log 0640
+    mkdir /data/exagear/cores 0640
+    restorecon_recursive /data/exagear

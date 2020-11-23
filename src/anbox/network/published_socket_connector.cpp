@@ -37,8 +37,8 @@ PublishedSocketConnector::PublishedSocketConnector(
 }
 
 PublishedSocketConnector::~PublishedSocketConnector() noexcept {
-  std::remove(socket_file_.c_str());
-  utils::remove_paths({socket_dir_});
+     std::remove(socket_file_.c_str());
+     utils::remove_paths({socket_dir_});
 }
 
 void PublishedSocketConnector::start_accept() {

@@ -35,9 +35,7 @@ class WindowState {
   WindowState();
   WindowState(const Display::Id &display, bool has_surface,
               const graphics::Rect &frame, const std::string &package_name,
-              const Task::Id &task, const Stack::Id &stack,
-              int rotation);
-
+              const Task::Id &task, const Stack::Id &stack);
   ~WindowState();
 
   Display::Id display() const { return display_; }
@@ -46,7 +44,6 @@ class WindowState {
   std::string package_name() const { return package_name_; }
   Task::Id task() const { return task_; }
   Stack::Id stack() const { return stack_; }
-  int rotation_angle() const { return rotation_angle_; }
 
  private:
   Display::Id display_;
@@ -55,7 +52,6 @@ class WindowState {
   std::string package_name_;
   Task::Id task_;
   Stack::Id stack_;
-  int rotation_angle_;
 };
 }  // namespace wm
 }  // namespace anbox

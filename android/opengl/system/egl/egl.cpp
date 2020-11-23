@@ -315,6 +315,10 @@ EGLBoolean egl_window_surface_t::swapBuffers()
     DEFINE_AND_VALIDATE_HOST_CONNECTION(EGL_FALSE);
 
     rcEnc->rcFlushWindowColorBuffer(rcEnc, rcSurface);
+    if (!buffer) {
+        ALOGE("queue null buffer to Surface");
+        setErrorReturn(EGL_BAD_ALLOC, EGL_FALSE);
+    }
 
     nativeWindow->queueBuffer_DEPRECATED(nativeWindow, buffer);
     if (nativeWindow->dequeueBuffer_DEPRECATED(nativeWindow, &buffer)) {

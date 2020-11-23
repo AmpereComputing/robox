@@ -41,6 +41,10 @@ BOARD_USE_LEGACY_UI := true
 # of an SDK AVD. Note that this operation only works on Linux for now
 ifeq ($(HOST_OS),linux)
 WITH_DEXPREOPT ?= true
+    ifneq ($(TARGET_BUILD_VARIANT),user)
+        # Retain classes.dex in APK's for non-user builds
+        DEX_PREOPT_DEFAULT := nostripping
+    endif
 endif
 
 # PDK does not use ext4 image, but it is added here to prevent build break.

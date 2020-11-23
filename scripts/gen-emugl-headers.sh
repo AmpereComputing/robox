@@ -97,7 +97,7 @@ gen_functions_header \
         "$GEN_ENTRIES"
 
 GLES_ENTRIES="gles_common gles_extensions gles1_only gles1_extensions gles2_only \
-gles2_extensions gles3_only"
+gles2_extensions gles3_only gles31_only"
 
 for ENTRY in $GLES_ENTRIES; do
     SRC_FILE=$OPENGLES_DISPATCH_SRCDIR/${ENTRY}.entries

@@ -43,15 +43,20 @@ PRODUCT_COPY_FILES += \
 	vendor/anbox/android/init.goldfish.rc:root/init.goldfish.rc \
 	vendor/anbox/android/init.goldfish.sh:system/etc/init.goldfish.sh \
 	vendor/anbox/android/ueventd.goldfish.rc:root/ueventd.goldfish.rc \
-	vendor/anbox/android/camera/media_profiles.xml:system/etc/media_profiles.xml \
-	vendor/anbox/android/camera/media_codecs.xml:system/etc/media_codecs.xml \
-	hardware/libhardware_legacy/audio/audio_policy.conf:system/etc/audio_policy.conf \
-        vendor/anbox/android/anbox-touch.idc:system/usr/idc/anbox-touch.idc
+	vendor/anbox/android/media/media_profiles.xml:system/etc/media_profiles.xml \
+	vendor/anbox/android/media/media_codecs.xml:system/etc/media_codecs.xml \
+	vendor/anbox/android/media/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
+	vendor/anbox/android/media/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
+	vendor/anbox/android/media/media_codecs_google_tv.xml:system/etc/media_codecs_google_tv.xml \
+	vendor/anbox/android/media/media_codecs_google_video.xml:system/etc/media_codecs_google_video.xml \
+	hardware/libhardware_legacy/audio/audio_policy.conf:system/etc/audio_policy.conf
 
 PRODUCT_CHARACTERISTICS := emulator
 
 # Include drawables for all densities
-PRODUCT_AAPT_CONFIG := normal
+PRODUCT_AAPT_CONFIG := normal xhdpi
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.sf.lcd_density=320 \
 
 PRODUCT_COPY_FILES += \
 	vendor/anbox/scripts/anbox-init.sh:root/anbox-init.sh \
@@ -91,7 +96,7 @@ DEVICE_PACKAGE_OVERLAYS += \
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base.mk)
 # Extend heap size we use for dalvik/art runtime
-$(call inherit-product, frameworks/native/build/tablet-10in-xhdpi-2048-dalvik-heap.mk)
+$(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
 
 PRODUCT_COPY_FILES += \
 	vendor/anbox/products/anbox.xml:system/etc/permissions/anbox.xml

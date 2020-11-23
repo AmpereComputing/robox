@@ -17,7 +17,9 @@
 
 #include <thread>
 
+#ifndef BOOST_LOG_DYN_LINK
 #define BOOST_LOG_DYN_LINK
+#endif
 #include <boost/date_time.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/log/expressions.hpp>
@@ -190,7 +192,7 @@ std::ostream& operator<<(std::ostream& strm, anbox::Logger::Severity severity) {
     case anbox::Logger::Severity::kFatal:
       return strm << "FF";
     default:
-      return strm << static_cast<uint>(severity);
+      return strm << static_cast<unsigned int>(severity);
   }
 }
 

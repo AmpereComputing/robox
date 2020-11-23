@@ -66,18 +66,18 @@ std::size_t IpConfigBuilder::write(common::BinaryWriter &writer) {
   writer.write_string_with_size(assignment_to_string(assignment_));
 
   if (assignment_to_string(assignment_) != "DHCP") {
-    writer.write_string_with_size(link_address_key);
-    writer.write_string_with_size(link_.address);
-    writer.write_uint32(link_.prefix_length);
+  writer.write_string_with_size(link_address_key);
+  writer.write_string_with_size(link_.address);
+  writer.write_uint32(link_.prefix_length);
 
-    writer.write_string_with_size(gateway_key);
-    writer.write_uint32(is_default_gateway);
-    writer.write_uint32(gateway_is_present);
-    writer.write_string_with_size(gateway_);
+  writer.write_string_with_size(gateway_key);
+  writer.write_uint32(is_default_gateway);
+  writer.write_uint32(gateway_is_present);
+  writer.write_string_with_size(gateway_);
 
-    writer.write_string_with_size(dns_key);
-    for (const auto &server : dns_servers_)
-      writer.write_string_with_size(server);
+  writer.write_string_with_size(dns_key);
+  for (const auto &server : dns_servers_)
+    writer.write_string_with_size(server);
   }
 
   writer.write_string_with_size(id_key);

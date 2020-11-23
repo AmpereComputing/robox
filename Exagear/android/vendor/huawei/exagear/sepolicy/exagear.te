@@ -1,0 +1,31 @@
+# Exagear-related properties
+type exagear_prop, property_type;
+
+# Extra permissions needed for translated processes
+define(`exagear_translated', `
+  allow $1 self:process execmem;
+  allow $1 tmpfs:file rw_file_perms;
+  userdebug_or_eng(`
+    allow $1 exagear_debug_file:file create_file_perms;
+    allow $1 exagear_debug_file:dir w_dir_perms;
+  ')
+  get_prop($1, exagear_prop)
+')
+
+# 32-bit zygote
+exagear_translated(zygote)
+
+# 32-bit app
+exagear_translated(appdomain)
+
+# 32-bit dex2oat
+exagear_translated(dex2oat)
+
+# 32-bit system servers
+exagear_translated(debuggerd)
+exagear_translated(cameraserver)
+exagear_translated(drmserver)
+exagear_translated(mediaserver)
+exagear_translated(mediacodec)
+exagear_translated(mediaextractor)
+exagear_translated(mediadrmserver)

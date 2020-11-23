@@ -43,7 +43,7 @@ class RenderContext {
   // Retrieve host EGLContext value.
   EGLContext getEGLContext() const { return mContext; }
 
-  // Return true iff this is a GLESv2 context.
+  // Return true if this is a GLESv2 context.
   bool isGL2() const { return mIsGl2; }
 
   // Retrieve GLDecoderContextData instance reference for this

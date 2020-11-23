@@ -49,10 +49,9 @@ std::string read_file_if_exists_or_throw(const std::string &file_path) {
 
   std::ifstream file;
   file.open(file_path, std::ifstream::in);
-  std::string content;
-  file >> content;
-  file.close();
-  return content;
+  std::stringstream buffer;
+  buffer << file.rdbuf();
+  return buffer.str();
 }
 
 bool write_to_file(const std::string &file_path, const std::string &content) {
@@ -173,7 +172,6 @@ void remove_paths(const std::vector<std::string> &paths) {
         fs::remove(fs::path(path));
   }
 }
-
 std::string prefix_dir_from_env(const std::string &path,
                                 const std::string &env_var) {
   static auto snap_data_path = anbox::utils::get_env_value(env_var, "");

@@ -26,27 +26,16 @@
 namespace anbox {
 namespace input {
 Manager::Manager(const std::shared_ptr<Runtime> &runtime) : runtime_(runtime) {
-  inputdir_ = SystemConfiguration::instance().input_device_dir();
-  instancedir_ = SystemConfiguration::instance().instance_dir();
-  utils::ensure_paths({inputdir_});
+  utils::ensure_paths({SystemConfiguration::instance().input_device_dir()});
 }
 
-Manager::~Manager() {
-  for (auto file : files_)
-    std::remove(file.c_str());
-
-  /* Remove any hanging/empty directories */
-  utils::remove_paths({inputdir_});
-  utils::remove_paths({instancedir_});
-}
+Manager::~Manager() {}
 
 std::shared_ptr<Device> Manager::create_device() {
   const auto id = next_id();
   const auto path = build_device_path(id);
   auto device = Device::create(path, runtime_);
   devices_.insert({id, device});
-  files_.push_back(path);
-
   return device;
 }
 
