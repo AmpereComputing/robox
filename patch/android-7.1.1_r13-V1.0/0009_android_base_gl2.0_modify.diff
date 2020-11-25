@@ -1,0 +1,77 @@
+diff --git a/core/java/android/app/ActivityManagerNative.java b/core/java/android/app/ActivityManagerNative.java
+index 50479c8e951..37b70e06e7f 100644
+--- a/core/java/android/app/ActivityManagerNative.java
++++ b/core/java/android/app/ActivityManagerNative.java
+@@ -5250,6 +5250,9 @@ class ActivityManagerProxy implements IActivityManager
+         ConfigurationInfo res = ConfigurationInfo.CREATOR.createFromParcel(reply);
+         reply.recycle();
+         data.recycle();
++        //added  for reqGlEsVersion begin
++	res.reqGlEsVersion=0x20000;
++	//added  for reqGlEsVerskion edn
+         return res;
+     }
+ 
+diff --git a/opengl/java/android/opengl/GLSurfaceView.java b/opengl/java/android/opengl/GLSurfaceView.java
+index 0f5dd3aa566..f6aecadc954 100644
+--- a/opengl/java/android/opengl/GLSurfaceView.java
++++ b/opengl/java/android/opengl/GLSurfaceView.java
+@@ -439,8 +439,19 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
+      */
+     public void setEGLConfigChooser(int redSize, int greenSize, int blueSize,
+             int alphaSize, int depthSize, int stencilSize) {
+-        setEGLConfigChooser(new ComponentSizeChooser(redSize, greenSize,
+-                blueSize, alphaSize, depthSize, stencilSize));
++        //Modified for EGL No config chosen begin
++	if(depthSize == 16 && ((stencilSize == 8) || (stencilSize == 0)))
++        {
++           alphaSize = 8;
++	    depthSize = 24;
++	    stencilSize = 8;
++	    Log.e("setEGLConfigChooser","redSize="+redSize+" greenSize="+greenSize+" blueSize="+blueSize+" alphaSize="+alphaSize+" depthSize="+depthSize+"stencilSize="+stencilSize);
++        }
++        setEGLConfigChooser(new ComponentSizeChooser(8, 8,
++		8, alphaSize, depthSize, stencilSize));
++	//setEGLConfigChooser(new ComponentSizeChooser(redSize, greenSize,
++        //        blueSize, alphaSize, depthSize, stencilSize));
++	//Modified for EGL No config chosen end
+     }
+ 
+     /**
+@@ -872,12 +883,10 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
+             }
+ 
+             int numConfigs = num_config[0];
+-
+             if (numConfigs <= 0) {
+                 throw new IllegalArgumentException(
+                         "No configs match configSpec");
+             }
+-
+             EGLConfig[] configs = new EGLConfig[numConfigs];
+             if (!egl.eglChooseConfig(display, mConfigSpec, configs, numConfigs,
+                     num_config)) {
+@@ -1040,7 +1049,22 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
+                 mEglContext = null;
+             } else {
+                 mEglConfig = view.mEGLConfigChooser.chooseConfig(mEgl, mEglDisplay);
+-
++		// Added for EglConfig Null Issue begin
++		if (mEglConfig == null) {
++			EGLConfig[] configs = new EGLConfig[1];
++			int [] num_config = new int[1];
++			int[] attributes = new int[] { 
++				        EGL10.EGL_RED_SIZE, 8,  
++				        EGL10.EGL_GREEN_SIZE, 8, 
++				        EGL10.EGL_BLUE_SIZE, 8,  
++				        EGL10.EGL_ALPHA_SIZE, 8, 
++				        EGL10.EGL_DEPTH_SIZE, 16, 
++				        EGL10.EGL_RENDERABLE_TYPE, 4, 
++				        EGL10.EGL_NONE };
++			mEgl.eglChooseConfig(mEglDisplay, attributes, configs, 1, num_config);
++			mEglConfig = configs[0];
++		}
++		// Added for EglConfig Null Issue end
+                 /*
+                 * Create an EGL context. We want to do this as rarely as we can, because an
+                 * EGL context is a somewhat heavy object.
