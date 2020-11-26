@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ANBOX=anbox
+ANBOX="anbox"
 SESSIONMANAGER="$ANBOX session-manager"
 LAUNCHER="$ANBOX launch"
 BINDMOUNTDIR=$HOME/anbox-data
@@ -24,9 +24,7 @@ EXECUTIONS=0
 FAILED=255
 SUPPORTEDINSTANCES=253 # Restricted by Class C networking (!1 && !255)
                        # Remember Robox IP addresses start at <MASK>.2
-PLAYNUM=:0
-CPUS=0
-MEMS=0
+DISPLAY=:0
 
 trap die INT
 
@@ -70,19 +68,6 @@ function die() {
     $0 $opts start $instancenum -lf $ROBOXALLLOG -x $EXECUTIONS
 
     return $instancenum
-}
-function calculate_binde_cpu()
-{
-   PLAYNUM=$(($(($instancenum - 1)) % 6 ))
-   if [[ $instancenum -le 15 ]]; then
-	  CPU_START=$(($(($instancenum - 1)) * 4 + 4))
-          MEMS="0,1"
-   else
-          CPU_START=$(($(($instancenum - 1)) * 4 + 4))
-	  MEMS="2,3"
-   fi
-   CPU_END=$((${CPU_START}+3))
-   CPUS="${CPU_START}-${CPU_END}"
 }
 
 function start_binder_ashmem()
@@ -172,7 +157,7 @@ function start_framebuffer()
     fi
 
     out "$instancenum: STARTING Frame Buffer"
-    cmd="Xorg $display -config /etc/X11/xorg0.conf -sharevts"
+    cmd="Xorg $display -config /etc/X11/xorg4.conf -sharevts"
 
     # LEE: Might need a sleep here
     ps aux | grep Xorg | grep "Xorg[[:space:]]*$display " > /dev/null
@@ -197,10 +182,10 @@ function start_session_manager()
 	windowing="--single-window"
     fi
 
-    cmd="taskset -c ${CPUS} $SESSIONMANAGER --run-multiple=$instancenum --use-system-dbus --standalone --experimental $windowing --window-size=720,1280"
+    cmd="taskset -c 4-7 $SESSIONMANAGER --run-multiple=$instancenum --standalone --experimental $windowing --window-size=720,1280"
 
     echo $cmd
-    export DISPLAY=:$PLAYNUM
+    export DISPLAY=$DISPLAY
     export EGL_PLATFORM=x11
     export EGL_LOG_LEVEL="fatal"
     eval $cmd &
@@ -227,11 +212,11 @@ function start_session_manager()
 
 function configure_networking()
 {
-    unique_ip=$instancenum
-    #unique_ip=`ps -ef | grep proxy | grep 172.17.0 | awk '{print $16}' | awk -F "." '{print $4}' | sort -nur | sed -n '1p'`
-    #if [[ ! $unique_ip ]]; then
-    #    unique_ip=1
-    #fi
+    #unique_ip=$instancenum
+    unique_ip=`ps -ef | grep proxy | grep 172.17.0 | awk '{print $16}' | awk -F "." '{print $4}' | sort -nur | sed -n '1p'`
+    if [[ ! $unique_ip ]]; then
+        unique_ip=1
+    fi
     unique_ip=$(($unique_ip + 1))
     final_ip=172.17.0.$unique_ip
 
@@ -288,8 +273,8 @@ function start_docker_container()
 	   --cap-add=SYS_RESOURCE \
            --security-opt="apparmor=unconfined" \
            --security-opt="seccomp=unconfined" \
-	   --cpuset-cpus="${CPUS}" \
-	   --cpuset-mems="${MEMS}" \
+	   --cpuset-cpus="4-7" \
+	   --cpuset-mems="0" \
 	   --memory="3584M" \
 	   --name instance$DOCKERNAME \
 	   -e PATH=/system/bin:/system/xbin \
@@ -305,6 +290,7 @@ function start_docker_container()
 	   --volume=$BINDMOUNTDIR/$instancenum/data:/data:rw \
 	   -p $adbport:5555 \
            android:robox /anbox-init.sh"
+           #android:robox /anbox-init.sh"
 
     debug $cmd
     $cmd &>> $ROBOXALLLOG $DK
@@ -389,8 +375,6 @@ function start()
     ulimit -n 4096
     ulimit -s unlimited
 
-    calculate_binde_cpu
-    start_binder_ashmem
     # Enable core dumps
     ulimit -c unlimited
 
