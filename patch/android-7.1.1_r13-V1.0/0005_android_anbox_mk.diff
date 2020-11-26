@@ -1,0 +1,11 @@
+diff --git a/products/anbox_arm64.mk b/products/anbox_arm64.mk
+index e535271..5c37c3e 100644
+--- a/products/anbox_arm64.mk
++++ b/products/anbox_arm64.mk
+@@ -22,3 +22,6 @@ PRODUCT_NAME := anbox_arm64
+ PRODUCT_DEVICE := arm64
+ PRODUCT_BRAND := Android
+ PRODUCT_MODEL := Anbox
++
++WITH_EXAGEAR := true
++include $(wildcard vendor/huawei/exagear/exagear.mk)

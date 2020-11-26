@@ -1,0 +1,52 @@
+t a/opengl/libs/EGL/eglApi.cpp b/opengl/libs/EGL/eglApi.cpp
+old mode 100644
+new mode 100755
+index f41e6e2..8db36dd
+--- a/opengl/libs/EGL/eglApi.cpp
++++ b/opengl/libs/EGL/eglApi.cpp
+@@ -65,6 +65,35 @@ using namespace android;
+ // ----------------------------------------------------------------------------
+
+ namespace android {
++#define CALL_FREQ(FUNC_NAME) \
++        do { \
++            static struct timeval t_start_##FUNC_NAME,t_end_##FUNC_NAME;  \
++            static long long last_t_##FUNC_NAME = 0;                      \
++            static int frame_cnt_##FUNC_NAME = 0;                         \
++            long long current_t = 0;                                      \
++            long long diff_t = 0;                                         \
++            double frequent = 0;                                          \
++            struct timeval t_time;                                        \
++            frame_cnt_##FUNC_NAME++;                                      \
++            if(last_t_##FUNC_NAME == 0)                                   \
++            {                                                             \
++                gettimeofday (&t_time , NULL);                            \
++                last_t_##FUNC_NAME = t_time.tv_sec*1000000 + t_time.tv_usec; \
++            }                                                             \
++            else                                                          \
++            {                                                             \
++                if(frame_cnt_##FUNC_NAME == 100)                          \
++                {                                                         \
++                    gettimeofday (&t_time , NULL);                        \
++                    current_t = t_time.tv_sec*1000000 + t_time.tv_usec;   \
++                    diff_t = current_t - last_t_##FUNC_NAME;              \
++                    frequent = (100*1000000.0) / diff_t;                  \
++                    ALOGD("%s called_frequent diff_t=%d %.1f\n",#FUNC_NAME,diff_t,frequent); \
++                    last_t_##FUNC_NAME = current_t;                       \
++                    frame_cnt_##FUNC_NAME = 0;                            \
++                }                                                         \
++            }                                                             \
++        } while(0)
+
+ struct extention_map_t {
+     const char* name;
+@@ -1081,6 +1110,10 @@ EGLBoolean eglSwapBuffersWithDamageKHR(EGLDisplay dpy, EGLSurface draw,
+     ATRACE_CALL();
+     clearError();
+
++    char value[PROPERTY_VALUE_MAX];
++    property_get("debug.egl.call_freq", value, "false");
++    if (!strcmp(value,"true"))
++       CALL_FREQ(eglSwapBuffersWithDamageKHR);
+     const egl_display_ptr dp = validate_display(dpy);
+     if (!dp) return EGL_FALSE;
