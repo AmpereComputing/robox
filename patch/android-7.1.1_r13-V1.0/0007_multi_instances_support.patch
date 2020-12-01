@@ -1,9 +1,9 @@
-diff --git a/anbox-master/src/anbox/cmds/launch.cpp b/anbox-master/src/anbox/cmds/launch.cpp
+diff --git a/vendor/anbox/src/anbox/cmds/launch.cpp b/vendor/anbox/src/anbox/cmds/launch.cpp
 old mode 100644
 new mode 100755
 index a8de408..35f156f
---- a/anbox-master/src/anbox/cmds/launch.cpp
-+++ b/anbox-master/src/anbox/cmds/launch.cpp
+--- a/vendor/anbox/src/anbox/cmds/launch.cpp
++++ b/vendor/anbox/src/anbox/cmds/launch.cpp
 @@ -159,6 +159,9 @@ anbox::cmds::Launch::Launch()
    flag(cli::make_flag(cli::Name{"stack"},
                        cli::Description{"Which window stack the activity should be started on. Possible: default, fullscreen, freeform"},
@@ -23,12 +23,12 @@ index a8de408..35f156f
  
      auto bus_type = anbox::dbus::Bus::Type::Session;
      if (use_system_dbus_)
-diff --git a/anbox-master/src/anbox/cmds/launch.h b/anbox-master/src/anbox/cmds/launch.h
+diff --git a/vendor/anbox/src/anbox/cmds/launch.h b/vendor/anbox/src/anbox/cmds/launch.h
 old mode 100644
 new mode 100755
 index 2aa3d0f..bcf3368
---- a/anbox-master/src/anbox/cmds/launch.h
-+++ b/anbox-master/src/anbox/cmds/launch.h
+--- a/vendor/anbox/src/anbox/cmds/launch.h
++++ b/vendor/anbox/src/anbox/cmds/launch.h
 @@ -39,6 +39,7 @@ class Launch : public cli::CommandWithFlagsAndAction {
  
    android::Intent intent_;
@@ -37,12 +37,12 @@ index 2aa3d0f..bcf3368
    bool use_system_dbus_ = false;
  };
  }  // namespace cmds
-diff --git a/anbox-master/src/anbox/cmds/session_manager.cpp b/anbox-master/src/anbox/cmds/session_manager.cpp
+diff --git a/vendor/anbox/src/anbox/cmds/session_manager.cpp b/vendor/anbox/src/anbox/cmds/session_manager.cpp
 old mode 100644
 new mode 100755
 index df19c3d..d67cd75
---- a/anbox-master/src/anbox/cmds/session_manager.cpp
-+++ b/anbox-master/src/anbox/cmds/session_manager.cpp
+--- a/vendor/anbox/src/anbox/cmds/session_manager.cpp
++++ b/vendor/anbox/src/anbox/cmds/session_manager.cpp
 @@ -106,6 +106,9 @@ anbox::cmds::SessionManager::SessionManager()
    flag(cli::make_flag(cli::Name{"experimental"},
                        cli::Description{"Allows users to use experimental features"},
@@ -158,12 +158,12 @@ index df19c3d..d67cd75
          {bridge_connector->socket_file(), "/dev/anbox_bridge"},
          {audio_server->socket_file(), "/dev/anbox_audio"},
          {SystemConfiguration::instance().input_device_dir(), "/dev/input"},
-diff --git a/anbox-master/src/anbox/cmds/session_manager.h b/anbox-master/src/anbox/cmds/session_manager.h
+diff --git a/vendor/anbox/src/anbox/cmds/session_manager.h b/vendor/anbox/src/anbox/cmds/session_manager.h
 old mode 100644
 new mode 100755
 index 0e90ab9..eff1082
---- a/anbox-master/src/anbox/cmds/session_manager.h
-+++ b/anbox-master/src/anbox/cmds/session_manager.h
+--- a/vendor/anbox/src/anbox/cmds/session_manager.h
++++ b/vendor/anbox/src/anbox/cmds/session_manager.h
 @@ -31,9 +31,15 @@ namespace anbox {
  namespace bridge {
  class AndroidApiStub;
@@ -195,12 +195,12 @@ index 0e90ab9..eff1082
    bool use_system_dbus_ = false;
    bool use_software_rendering_ = false;
    bool no_touch_emulation_ = false;
-diff --git a/anbox-master/src/anbox/dbus/interface.h b/anbox-master/src/anbox/dbus/interface.h
+diff --git a/vendor/anbox/src/anbox/dbus/interface.h b/vendor/anbox/src/anbox/dbus/interface.h
 old mode 100644
 new mode 100755
 index abce44f..3254dc4
---- a/anbox-master/src/anbox/dbus/interface.h
-+++ b/anbox-master/src/anbox/dbus/interface.h
+--- a/vendor/anbox/src/anbox/dbus/interface.h
++++ b/vendor/anbox/src/anbox/dbus/interface.h
 @@ -17,16 +17,29 @@
  
  #ifndef ANBOX_DBUS_INTERFACE_H_
@@ -233,12 +233,12 @@ index abce44f..3254dc4
    struct Methods {
        struct Launch {
          static inline const char* name() { return "Launch"; }
-diff --git a/anbox-master/src/anbox/network/base_socket_messenger.cpp b/anbox-master/src/anbox/network/base_socket_messenger.cpp
+diff --git a/vendor/anbox/src/anbox/network/base_socket_messenger.cpp b/vendor/anbox/src/anbox/network/base_socket_messenger.cpp
 old mode 100644
 new mode 100755
 index 23efc78..77698a7
---- a/anbox-master/src/anbox/network/base_socket_messenger.cpp
-+++ b/anbox-master/src/anbox/network/base_socket_messenger.cpp
+--- a/vendor/anbox/src/anbox/network/base_socket_messenger.cpp
++++ b/vendor/anbox/src/anbox/network/base_socket_messenger.cpp
 @@ -76,8 +76,6 @@ Credentials BaseSocketMessenger<stream_protocol>::creds() const {
  template <typename stream_protocol>
  ssize_t BaseSocketMessenger<stream_protocol>::send_raw(char const* data,
@@ -263,12 +263,12 @@ index 23efc78..77698a7
                  boost::asio::transfer_all());
      } catch (const boost::system::system_error& err) {
        if (err.code() == boost::asio::error::try_again) continue;
-diff --git a/anbox-master/src/anbox/network/published_socket_connector.cpp b/anbox-master/src/anbox/network/published_socket_connector.cpp
+diff --git a/vendor/anbox/src/anbox/network/published_socket_connector.cpp b/vendor/anbox/src/anbox/network/published_socket_connector.cpp
 old mode 100644
 new mode 100755
 index 50e8fc5..1d4ca3e
---- a/anbox-master/src/anbox/network/published_socket_connector.cpp
-+++ b/anbox-master/src/anbox/network/published_socket_connector.cpp
+--- a/vendor/anbox/src/anbox/network/published_socket_connector.cpp
++++ b/vendor/anbox/src/anbox/network/published_socket_connector.cpp
 @@ -18,7 +18,9 @@
  #include "anbox/network/published_socket_connector.h"
  #include "anbox/network/connection_context.h"
@@ -295,12 +295,12 @@ index 50e8fc5..1d4ca3e
  
  void PublishedSocketConnector::start_accept() {
    auto socket = std::make_shared<boost::asio::local::stream_protocol::socket>(runtime_->service());
-diff --git a/anbox-master/src/anbox/network/published_socket_connector.h b/anbox-master/src/anbox/network/published_socket_connector.h
+diff --git a/vendor/anbox/src/anbox/network/published_socket_connector.h b/vendor/anbox/src/anbox/network/published_socket_connector.h
 old mode 100644
 new mode 100755
 index 1791f53..0a59cda
---- a/anbox-master/src/anbox/network/published_socket_connector.h
-+++ b/anbox-master/src/anbox/network/published_socket_connector.h
+--- a/vendor/anbox/src/anbox/network/published_socket_connector.h
++++ b/vendor/anbox/src/anbox/network/published_socket_connector.h
 @@ -45,6 +45,7 @@ class PublishedSocketConnector : public DoNotCopyOrMove, public Connector {
        boost::system::error_code const& err);
  
@@ -309,12 +309,12 @@ index 1791f53..0a59cda
    std::shared_ptr<Runtime> runtime_;
    std::shared_ptr<ConnectionCreator<boost::asio::local::stream_protocol>>
        connection_creator_;
-diff --git a/anbox-master/src/anbox/network/socket_connection.cpp b/anbox-master/src/anbox/network/socket_connection.cpp
+diff --git a/vendor/anbox/src/anbox/network/socket_connection.cpp b/vendor/anbox/src/anbox/network/socket_connection.cpp
 old mode 100644
 new mode 100755
 index 02c079d..71df519
---- a/anbox-master/src/anbox/network/socket_connection.cpp
-+++ b/anbox-master/src/anbox/network/socket_connection.cpp
+--- a/vendor/anbox/src/anbox/network/socket_connection.cpp
++++ b/vendor/anbox/src/anbox/network/socket_connection.cpp
 @@ -46,14 +46,18 @@ SocketConnection::SocketConnection(
        connections_(connections),
        processor_(processor) {}
@@ -335,12 +335,12 @@ index 02c079d..71df519
    message_receiver_->async_receive_msg(callback, ba::buffer(buffer_));
  }
  
-diff --git a/anbox-master/src/anbox/platform/base_platform.h b/anbox-master/src/anbox/platform/base_platform.h
+diff --git a/vendor/anbox/src/anbox/platform/base_platform.h b/vendor/anbox/src/anbox/platform/base_platform.h
 old mode 100644
 new mode 100755
 index 042781f..a78cc07
---- a/anbox-master/src/anbox/platform/base_platform.h
-+++ b/anbox-master/src/anbox/platform/base_platform.h
+--- a/vendor/anbox/src/anbox/platform/base_platform.h
++++ b/vendor/anbox/src/anbox/platform/base_platform.h
 @@ -57,6 +57,8 @@ class BasePlatform {
    virtual void set_renderer(const std::shared_ptr<Renderer> &renderer) = 0;
    virtual void set_window_manager(const std::shared_ptr<wm::Manager> &window_manager) = 0;
@@ -350,12 +350,12 @@ index 042781f..a78cc07
    virtual bool supports_multi_window() const = 0;
  };
  
-diff --git a/anbox-master/src/anbox/platform/null/platform.cpp b/anbox-master/src/anbox/platform/null/platform.cpp
+diff --git a/vendor/anbox/src/anbox/platform/null/platform.cpp b/vendor/anbox/src/anbox/platform/null/platform.cpp
 old mode 100644
 new mode 100755
 index c894806..4fbfc2b
---- a/anbox-master/src/anbox/platform/null/platform.cpp
-+++ b/anbox-master/src/anbox/platform/null/platform.cpp
+--- a/vendor/anbox/src/anbox/platform/null/platform.cpp
++++ b/vendor/anbox/src/anbox/platform/null/platform.cpp
 @@ -68,6 +68,12 @@ void NullPlatform::set_window_manager(const std::shared_ptr<wm::Manager> &window
    ERROR("Not implemented");
  }
@@ -369,12 +369,12 @@ index c894806..4fbfc2b
  bool NullPlatform::supports_multi_window() const {
    return false;
  }
-diff --git a/anbox-master/src/anbox/platform/null/platform.h b/anbox-master/src/anbox/platform/null/platform.h
+diff --git a/vendor/anbox/src/anbox/platform/null/platform.h b/vendor/anbox/src/anbox/platform/null/platform.h
 old mode 100644
 new mode 100755
 index 24ad341..a7c1d19
---- a/anbox-master/src/anbox/platform/null/platform.h
-+++ b/anbox-master/src/anbox/platform/null/platform.h
+--- a/vendor/anbox/src/anbox/platform/null/platform.h
++++ b/vendor/anbox/src/anbox/platform/null/platform.h
 @@ -35,6 +35,8 @@ class NullPlatform : public BasePlatform {
    std::shared_ptr<audio::Source> create_audio_source() override;
    void set_renderer(const std::shared_ptr<Renderer> &renderer) override;
@@ -384,12 +384,12 @@ index 24ad341..a7c1d19
    bool supports_multi_window() const override;
  };
  }  // namespace wm
-diff --git a/anbox-master/src/anbox/platform/sdl/platform.cpp b/anbox-master/src/anbox/platform/sdl/platform.cpp
+diff --git a/vendor/anbox/src/anbox/platform/sdl/platform.cpp b/vendor/anbox/src/anbox/platform/sdl/platform.cpp
 old mode 100644
 new mode 100755
 index 56f1ff4..1a9175a
---- a/anbox-master/src/anbox/platform/sdl/platform.cpp
-+++ b/anbox-master/src/anbox/platform/sdl/platform.cpp
+--- a/vendor/anbox/src/anbox/platform/sdl/platform.cpp
++++ b/vendor/anbox/src/anbox/platform/sdl/platform.cpp
 @@ -46,7 +46,7 @@ Platform::Platform(
    // by the desktop shell already and we don't have to do this again.
    // If we would leave this enabled it will prevent systems from
@@ -412,12 +412,12 @@ index 56f1ff4..1a9175a
  void Platform::process_events() {
    event_thread_running_ = true;
  
-diff --git a/anbox-master/src/anbox/platform/sdl/platform.h b/anbox-master/src/anbox/platform/sdl/platform.h
+diff --git a/vendor/anbox/src/anbox/platform/sdl/platform.h b/vendor/anbox/src/anbox/platform/sdl/platform.h
 old mode 100644
 new mode 100755
 index 898c545..2ae1fb4
---- a/anbox-master/src/anbox/platform/sdl/platform.h
-+++ b/anbox-master/src/anbox/platform/sdl/platform.h
+--- a/vendor/anbox/src/anbox/platform/sdl/platform.h
++++ b/vendor/anbox/src/anbox/platform/sdl/platform.h
 @@ -62,6 +62,8 @@ class Platform : public std::enable_shared_from_this<Platform>,
    void set_renderer(const std::shared_ptr<Renderer> &renderer) override;
    void set_window_manager(const std::shared_ptr<wm::Manager> &window_manager) override;
@@ -427,12 +427,12 @@ index 898c545..2ae1fb4
    void set_clipboard_data(const ClipboardData &data) override;
    ClipboardData get_clipboard_data() override;
  
-diff --git a/anbox-master/src/anbox/rpc/connection_creator.cpp b/anbox-master/src/anbox/rpc/connection_creator.cpp
+diff --git a/vendor/anbox/src/anbox/rpc/connection_creator.cpp b/vendor/anbox/src/anbox/rpc/connection_creator.cpp
 old mode 100644
 new mode 100755
 index 2f3f864..dad380d
---- a/anbox-master/src/anbox/rpc/connection_creator.cpp
-+++ b/anbox-master/src/anbox/rpc/connection_creator.cpp
+--- a/vendor/anbox/src/anbox/rpc/connection_creator.cpp
++++ b/vendor/anbox/src/anbox/rpc/connection_creator.cpp
 @@ -34,7 +34,10 @@ ConnectionCreator::ConnectionCreator(const std::shared_ptr<Runtime>& rt,
            std::make_shared<network::Connections<network::SocketConnection>>()),
        message_processor_factory_(factory) {}
@@ -461,12 +461,12 @@ index 2f3f864..dad380d
  }
  
  int ConnectionCreator::next_id() { return next_connection_id_.fetch_add(1); }
-diff --git a/anbox-master/src/anbox/rpc/connection_creator.h b/anbox-master/src/anbox/rpc/connection_creator.h
+diff --git a/vendor/anbox/src/anbox/rpc/connection_creator.h b/vendor/anbox/src/anbox/rpc/connection_creator.h
 old mode 100644
 new mode 100755
 index 960e47f..c0e0930
---- a/anbox-master/src/anbox/rpc/connection_creator.h
-+++ b/anbox-master/src/anbox/rpc/connection_creator.h
+--- a/vendor/anbox/src/anbox/rpc/connection_creator.h
++++ b/vendor/anbox/src/anbox/rpc/connection_creator.h
 @@ -54,6 +54,7 @@ class ConnectionCreator
    std::shared_ptr<network::Connections<network::SocketConnection>> const
        connections_;
@@ -475,12 +475,12 @@ index 960e47f..c0e0930
  };
  }  // namespace rpc
  }  // namespace anbox
-diff --git a/anbox-master/src/anbox/system_configuration.cpp b/anbox-master/src/anbox/system_configuration.cpp
+diff --git a/vendor/anbox/src/anbox/system_configuration.cpp b/vendor/anbox/src/anbox/system_configuration.cpp
 old mode 100644
 new mode 100755
 index 5b0b223..abf09d4
---- a/anbox-master/src/anbox/system_configuration.cpp
-+++ b/anbox-master/src/anbox/system_configuration.cpp
+--- a/vendor/anbox/src/anbox/system_configuration.cpp
++++ b/vendor/anbox/src/anbox/system_configuration.cpp
 @@ -43,6 +43,12 @@ static std::string runtime_dir() {
  }
  }
@@ -551,12 +551,12 @@ index 5b0b223..abf09d4
    if (anbox::utils::get_env_value("ANBOX_NO_DESKTOP_SUBDIR").length() > 0)
      dir = xdg::data().home() / "applications";
    return dir.string();
-diff --git a/anbox-master/src/anbox/system_configuration.h b/anbox-master/src/anbox/system_configuration.h
+diff --git a/vendor/anbox/src/anbox/system_configuration.h b/vendor/anbox/src/anbox/system_configuration.h
 old mode 100644
 new mode 100755
 index aaa081a..c192189
---- a/anbox-master/src/anbox/system_configuration.h
-+++ b/anbox-master/src/anbox/system_configuration.h
+--- a/vendor/anbox/src/anbox/system_configuration.h
++++ b/vendor/anbox/src/anbox/system_configuration.h
 @@ -30,13 +30,16 @@ class SystemConfiguration {
  
    virtual ~SystemConfiguration() = default;
@@ -582,12 +582,12 @@ index aaa081a..c192189
  };
  }  // namespace anbox
  
-diff --git a/anbox-master/src/anbox/utils.cpp b/anbox-master/src/anbox/utils.cpp
+diff --git a/vendor/anbox/src/anbox/utils.cpp b/vendor/anbox/src/anbox/utils.cpp
 old mode 100644
 new mode 100755
 index 6d52570..b34d400
---- a/anbox-master/src/anbox/utils.cpp
-+++ b/anbox-master/src/anbox/utils.cpp
+--- a/vendor/anbox/src/anbox/utils.cpp
++++ b/vendor/anbox/src/anbox/utils.cpp
 @@ -31,6 +31,7 @@
  #include <sys/types.h>
  
@@ -610,12 +610,12 @@ index 6d52570..b34d400
  std::string prefix_dir_from_env(const std::string &path,
                                  const std::string &env_var) {
    static auto snap_data_path = anbox::utils::get_env_value(env_var, "");
-diff --git a/anbox-master/src/anbox/utils.h b/anbox-master/src/anbox/utils.h
+diff --git a/vendor/anbox/src/anbox/utils.h b/vendor/anbox/src/anbox/utils.h
 old mode 100644
 new mode 100755
 index 4b45a08..9712e77
---- a/anbox-master/src/anbox/utils.h
-+++ b/anbox-master/src/anbox/utils.h
+--- a/vendor/anbox/src/anbox/utils.h
++++ b/vendor/anbox/src/anbox/utils.h
 @@ -49,6 +49,7 @@ bool is_env_set(const std::string &name);
  
  void ensure_paths(const std::vector<std::string> &paths);

@@ -1,7 +1,7 @@
-diff --git a/android/opengl/system/gralloc/gralloc.cpp b/android/opengl/system/gralloc/gralloc.cpp
+diff --git a/vendor/anbox/android/opengl/system/gralloc/gralloc.cpp b/vendor/anbox/android/opengl/system/gralloc/gralloc.cpp
 index e89fa0f..28a58d9 100644
---- a/android/opengl/system/gralloc/gralloc.cpp
-+++ b/android/opengl/system/gralloc/gralloc.cpp
+--- a/vendor/anbox/android/opengl/system/gralloc/gralloc.cpp
++++ b/vendor/anbox/android/opengl/system/gralloc/gralloc.cpp
 @@ -982,7 +982,8 @@ static int gralloc_device_open(const hw_module_t* module,
          const_cast<int&>(dev->device.format) = HAL_PIXEL_FORMAT_RGBA_8888;
          const_cast<float&>(dev->device.xdpi) = xdpi;

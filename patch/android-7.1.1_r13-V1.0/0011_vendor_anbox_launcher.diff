@@ -1,7 +1,7 @@
-diff --git a/android/appmgr/src/org/anbox/appmgr/LauncherActivity.java b/android/appmgr/src/org/anbox/appmgr/LauncherActivity.java
+diff --git a/vendor/anbox/android/appmgr/src/org/anbox/appmgr/LauncherActivity.java b/vendor/anbox/android/appmgr/src/org/anbox/appmgr/LauncherActivity.java
 index d89b03e..818f621 100644
---- a/android/appmgr/src/org/anbox/appmgr/LauncherActivity.java
-+++ b/android/appmgr/src/org/anbox/appmgr/LauncherActivity.java
+--- a/vendor/anbox/android/appmgr/src/org/anbox/appmgr/LauncherActivity.java
++++ b/vendor/anbox/android/appmgr/src/org/anbox/appmgr/LauncherActivity.java
 @@ -28,17 +28,22 @@ public final class LauncherActivity extends Activity {
      @Override
      public void onCreate(Bundle info) {

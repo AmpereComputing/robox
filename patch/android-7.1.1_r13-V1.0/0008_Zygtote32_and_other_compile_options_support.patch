@@ -1,6 +1,6 @@
-diff -uNr a/anbox/external/cpu_features/src/hwcaps.c b/anbox/external/cpu_features/src/hwcaps.c
---- a/anbox/external/cpu_features/src/hwcaps.c	2020-04-12 22:38:24.159740150 +0800
-+++ b/anbox/external/cpu_features/src/hwcaps.c	2020-04-12 22:39:22.499740177 +0800
+diff -uNr a/vendor/anbox/external/cpu_features/src/hwcaps.c b/vendor/anbox/external/cpu_features/src/hwcaps.c
+--- a/vendor/anbox/external/cpu_features/src/hwcaps.c	2020-04-12 22:38:24.159740150 +0800
++++ b/vendor/anbox/external/cpu_features/src/hwcaps.c	2020-04-12 22:39:22.499740177 +0800
 @@ -91,7 +91,8 @@
      D("Could not dlopen() C library: %s\n", dlerror());
      return 0;
@@ -11,9 +11,9 @@ diff -uNr a/anbox/external/cpu_features/src/hwcaps.c b/anbox/external/cpu_featur
    if (!func) {
      D("Could not find getauxval() in C library\n");
    } else {
-diff -uNr a/anbox/products/anbox.mk b/anbox/products/anbox.mk
---- a/anbox/products/anbox.mk	2020-04-12 22:38:24.159740150 +0800
-+++ b/anbox/products/anbox.mk	2020-04-12 22:39:22.499740177 +0800
+diff -uNr a/vendor/anbox/products/anbox.mk b/vendor/anbox/products/anbox.mk
+--- a/vendor/anbox/products/anbox.mk	2020-04-12 22:38:24.159740150 +0800
++++ b/vendor/anbox/products/anbox.mk	2020-04-12 22:39:22.499740177 +0800
 @@ -54,7 +54,9 @@
  PRODUCT_CHARACTERISTICS := emulator
  
@@ -34,9 +34,9 @@ diff -uNr a/anbox/products/anbox.mk b/anbox/products/anbox.mk
  
  PRODUCT_COPY_FILES += \
  	vendor/anbox/products/anbox.xml:system/etc/permissions/anbox.xml
-diff -uNr a/anbox/products/arm64/BoardConfig.mk b/anbox/products/arm64/BoardConfig.mk
---- a/anbox/products/arm64/BoardConfig.mk	2020-04-12 22:38:24.159740150 +0800
-+++ b/anbox/products/arm64/BoardConfig.mk	2020-04-12 22:39:22.499740177 +0800
+diff -uNr a/vendor/anbox/products/arm64/BoardConfig.mk b/vendor/anbox/products/arm64/BoardConfig.mk
+--- a/vendor/anbox/products/arm64/BoardConfig.mk	2020-04-12 22:38:24.159740150 +0800
++++ b/vendor/anbox/products/arm64/BoardConfig.mk	2020-04-12 22:39:22.499740177 +0800
 @@ -12,11 +12,11 @@
  TARGET_CPU_VARIANT := generic
  TARGET_CPU_ABI := arm64-v8a
@@ -54,9 +54,9 @@ diff -uNr a/anbox/products/arm64/BoardConfig.mk b/anbox/products/arm64/BoardConf
  
  AUDIOSERVER_MULTILIB := 64
  
-diff -uNr a/anbox/products/arm64/device.mk b/anbox/products/arm64/device.mk
---- a/anbox/products/arm64/device.mk	2020-04-12 22:38:24.159740150 +0800
-+++ b/anbox/products/arm64/device.mk	2020-04-12 22:39:22.499740177 +0800
+diff -uNr a/vendor/anbox/products/arm64/device.mk b/vendor/anbox/products/arm64/device.mk
+--- a/vendor/anbox/products/arm64/device.mk	2020-04-12 22:38:24.159740150 +0800
++++ b/vendor/anbox/products/arm64/device.mk	2020-04-12 22:39:22.499740177 +0800
 @@ -15,11 +15,11 @@
  #
  
@@ -72,9 +72,9 @@ diff -uNr a/anbox/products/arm64/device.mk b/anbox/products/arm64/device.mk
 -TARGET_SUPPORTS_32_BIT_APPS := false
 +TARGET_SUPPORTS_32_BIT_APPS := true
  TARGET_SUPPORTS_64_BIT_APPS := true
-diff -uNr a/anbox/scripts/anbox-init.sh b/anbox/scripts/anbox-init.sh
---- a/anbox/scripts/anbox-init.sh	2020-04-12 22:34:14.371740035 +0800
-+++ b/anbox/scripts/anbox-init.sh	2020-04-12 22:40:00.043740194 +0800
+diff -uNr a/vendor/anbox/scripts/anbox-init.sh b/vendor/anbox/scripts/anbox-init.sh
+--- a/vendor/anbox/scripts/anbox-init.sh	2020-04-12 22:34:14.371740035 +0800
++++ b/vendor/anbox/scripts/anbox-init.sh	2020-04-12 22:40:00.043740194 +0800
 @@ -25,6 +25,7 @@
  		chown system:system /dev/$f
  		chmod 0666 /dev/$f
@@ -83,9 +83,9 @@ diff -uNr a/anbox/scripts/anbox-init.sh b/anbox/scripts/anbox-init.sh
  
  	if [ -e "/dev/tun" ] ; then
  		chown system:vpn /dev/tun
-diff -uNr a/anbox/scripts/create-package.sh b/anbox/scripts/create-package.sh
---- a/anbox/scripts/create-package.sh	2020-04-12 22:38:24.159740150 +0800
-+++ b/anbox/scripts/create-package.sh	2020-04-12 22:39:22.499740177 +0800
+diff -uNr a/vendor/anbox/scripts/create-package.sh b/vendor/anbox/scripts/create-package.sh
+--- a/vendor/anbox/scripts/create-package.sh	2020-04-12 22:38:24.159740150 +0800
++++ b/vendor/anbox/scripts/create-package.sh	2020-04-12 22:39:22.499740177 +0800
 @@ -23,12 +23,19 @@
  sudo cp -ar $workdir/system/* $rootfs/system
  sudo umount $workdir/system

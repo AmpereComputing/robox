@@ -1,7 +1,7 @@
-diff --git a/android/opengl/shared/OpenglCodecCommon/Android.mk b/android/opengl/shared/OpenglCodecCommon/Android.mk
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/Android.mk b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/Android.mk
 index 2104398..b9cf6e5 100644
---- a/android/opengl/shared/OpenglCodecCommon/Android.mk
-+++ b/android/opengl/shared/OpenglCodecCommon/Android.mk
+--- a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/Android.mk
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/Android.mk
 @@ -5,9 +5,11 @@ LOCAL_PATH := $(call my-dir)
  
  commonSources := \
@@ -14,10 +14,10 @@ index 2104398..b9cf6e5 100644
          SocketStream.cpp \
          TcpStream.cpp \
  
-diff --git a/android/opengl/shared/OpenglCodecCommon/ChecksumCalculator.cpp b/android/opengl/shared/OpenglCodecCommon/ChecksumCalculator.cpp
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/ChecksumCalculator.cpp b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/ChecksumCalculator.cpp
 index 60940b8..8983524 100644
---- a/android/opengl/shared/OpenglCodecCommon/ChecksumCalculator.cpp
-+++ b/android/opengl/shared/OpenglCodecCommon/ChecksumCalculator.cpp
+--- a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/ChecksumCalculator.cpp
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/ChecksumCalculator.cpp
 @@ -16,30 +16,17 @@
  
  #include "ChecksumCalculator.h"
@@ -95,10 +95,10 @@ index 60940b8..8983524 100644
      m_numRead++;
      resetChecksum();
      return isValid;
-diff --git a/android/opengl/shared/OpenglCodecCommon/ChecksumCalculator.h b/android/opengl/shared/OpenglCodecCommon/ChecksumCalculator.h
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/ChecksumCalculator.h b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/ChecksumCalculator.h
 index 4cc231a..3494aef 100644
---- a/android/opengl/shared/OpenglCodecCommon/ChecksumCalculator.h
-+++ b/android/opengl/shared/OpenglCodecCommon/ChecksumCalculator.h
+--- a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/ChecksumCalculator.h
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/ChecksumCalculator.h
 @@ -123,6 +123,12 @@
  
  class ChecksumCalculator {
@@ -135,10 +135,10 @@ index 4cc231a..3494aef 100644
 -    uint32_t m_v1BufferTotalLength = 0;
 +    uint32_t m_v1BufferTotalLength;
  };
-diff --git a/android/opengl/shared/OpenglCodecCommon/FixedBuffer.h b/android/opengl/shared/OpenglCodecCommon/FixedBuffer.h
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/FixedBuffer.h b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/FixedBuffer.h
 index 7026396..9a908de 100644
---- a/android/opengl/shared/OpenglCodecCommon/FixedBuffer.h
-+++ b/android/opengl/shared/OpenglCodecCommon/FixedBuffer.h
+--- a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/FixedBuffer.h
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/FixedBuffer.h
 @@ -16,6 +16,8 @@
  #ifndef _FIXED_BUFFER_H
  #define _FIXED_BUFFER_H
@@ -148,10 +148,10 @@ index 7026396..9a908de 100644
  class FixedBuffer {
  public:
      FixedBuffer(size_t initialSize = 0) {
-diff --git a/android/opengl/shared/OpenglCodecCommon/GLClientState.cpp b/android/opengl/shared/OpenglCodecCommon/GLClientState.cpp
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLClientState.cpp b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLClientState.cpp
 index 638eb4c..6e9c8f6 100644
---- a/android/opengl/shared/OpenglCodecCommon/GLClientState.cpp
-+++ b/android/opengl/shared/OpenglCodecCommon/GLClientState.cpp
+--- a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLClientState.cpp
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLClientState.cpp
 @@ -14,6 +14,7 @@
  * limitations under the License.
  */
@@ -1956,10 +1956,10 @@ index 638eb4c..6e9c8f6 100644
 +bool GLClientState::needsInitFromCaps() const {
 +    return !m_initialized;
 +}
-diff --git a/android/opengl/shared/OpenglCodecCommon/GLClientState.h b/android/opengl/shared/OpenglCodecCommon/GLClientState.h
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLClientState.h b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLClientState.h
 index 8e95c37..e41cf44 100644
---- a/android/opengl/shared/OpenglCodecCommon/GLClientState.h
-+++ b/android/opengl/shared/OpenglCodecCommon/GLClientState.h
+--- a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLClientState.h
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLClientState.h
 @@ -22,6 +22,8 @@
  #define GL_APIENTRYP
  #endif
@@ -2802,11 +2802,11 @@ index 8e95c37..e41cf44 100644
          }
          return isClientStateParam;
      }
-diff --git a/android/opengl/shared/OpenglCodecCommon/GLESTextureUtils.cpp b/android/opengl/shared/OpenglCodecCommon/GLESTextureUtils.cpp
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLESTextureUtils.cpp b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLESTextureUtils.cpp
 new file mode 100644
 index 0000000..1aef8cb
 --- /dev/null
-+++ b/android/opengl/shared/OpenglCodecCommon/GLESTextureUtils.cpp
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLESTextureUtils.cpp
 @@ -0,0 +1,287 @@
 +#include "GLESTextureUtils.h"
 +
@@ -3095,11 +3095,11 @@ index 0000000..1aef8cb
 +}
 +
 +} // namespace GLESTextureUtils
-diff --git a/android/opengl/shared/OpenglCodecCommon/GLESTextureUtils.h b/android/opengl/shared/OpenglCodecCommon/GLESTextureUtils.h
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLESTextureUtils.h b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLESTextureUtils.h
 new file mode 100644
 index 0000000..906e590
 --- /dev/null
-+++ b/android/opengl/shared/OpenglCodecCommon/GLESTextureUtils.h
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLESTextureUtils.h
 @@ -0,0 +1,42 @@
 +#ifndef GLES_TEXTURE_UTILS_H
 +#define GLES_TEXTURE_UTILS_H
@@ -3143,12 +3143,12 @@ index 0000000..906e590
 +
 +} // namespace GLESTextureUtils
 +#endif
-diff --git a/android/opengl/shared/OpenglCodecCommon/GLSharedGroup.cpp b/android/opengl/shared/OpenglCodecCommon/GLSharedGroup.cpp
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLSharedGroup.cpp b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLSharedGroup.cpp
 old mode 100755
 new mode 100644
 index b079b6d..9da011a
---- a/android/opengl/shared/OpenglCodecCommon/GLSharedGroup.cpp
-+++ b/android/opengl/shared/OpenglCodecCommon/GLSharedGroup.cpp
+--- a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLSharedGroup.cpp
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLSharedGroup.cpp
 @@ -27,8 +27,8 @@ static void clearObjectMap(android::DefaultKeyedVector<GLuint, T>& v) {
  
  /**** BufferData ****/
@@ -3461,12 +3461,12 @@ index b079b6d..9da011a
 +    ShaderProgramData* spData = getShaderProgramData(shaderProgram);
 +    spData->programData->setupLocationShiftWAR();
 +}
-diff --git a/android/opengl/shared/OpenglCodecCommon/GLSharedGroup.h b/android/opengl/shared/OpenglCodecCommon/GLSharedGroup.h
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLSharedGroup.h b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLSharedGroup.h
 old mode 100755
 new mode 100644
 index 6dfcd8f..ca33836
---- a/android/opengl/shared/OpenglCodecCommon/GLSharedGroup.h
-+++ b/android/opengl/shared/OpenglCodecCommon/GLSharedGroup.h
+--- a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLSharedGroup.h
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/GLSharedGroup.h
 @@ -22,11 +22,17 @@
  #define GL_APIENTRYP
  #endif
@@ -3590,11 +3590,11 @@ index 6dfcd8f..ca33836
  };
  
  typedef SmartPtr<GLSharedGroup> GLSharedGroupPtr; 
-diff --git a/android/opengl/shared/OpenglCodecCommon/IndexRangeCache.cpp b/android/opengl/shared/OpenglCodecCommon/IndexRangeCache.cpp
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/IndexRangeCache.cpp b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/IndexRangeCache.cpp
 new file mode 100644
 index 0000000..c94e70c
 --- /dev/null
-+++ b/android/opengl/shared/OpenglCodecCommon/IndexRangeCache.cpp
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/IndexRangeCache.cpp
 @@ -0,0 +1,84 @@
 +/*
 +* Copyright (C) 2016 The Android Open Source Project
@@ -3680,11 +3680,11 @@ index 0000000..c94e70c
 +void IndexRangeCache::clear() {
 +    mIndexRangeCache.clear();
 +}
-diff --git a/android/opengl/shared/OpenglCodecCommon/IndexRangeCache.h b/android/opengl/shared/OpenglCodecCommon/IndexRangeCache.h
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/IndexRangeCache.h b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/IndexRangeCache.h
 new file mode 100644
 index 0000000..f19bd24
 --- /dev/null
-+++ b/android/opengl/shared/OpenglCodecCommon/IndexRangeCache.h
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/IndexRangeCache.h
 @@ -0,0 +1,104 @@
 +/*
 +* Copyright (C) 2016 The Android Open Source Project
@@ -3790,10 +3790,10 @@ index 0000000..f19bd24
 +};
 +
 +#endif
-diff --git a/android/opengl/shared/OpenglCodecCommon/TcpStream.cpp b/android/opengl/shared/OpenglCodecCommon/TcpStream.cpp
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/TcpStream.cpp b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/TcpStream.cpp
 index 4da2cec..2090ae0 100644
---- a/android/opengl/shared/OpenglCodecCommon/TcpStream.cpp
-+++ b/android/opengl/shared/OpenglCodecCommon/TcpStream.cpp
+--- a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/TcpStream.cpp
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/TcpStream.cpp
 @@ -28,6 +28,38 @@
  #include <ws2tcpip.h>
  #endif
@@ -3842,11 +3842,11 @@ index 4da2cec..2090ae0 100644
      if (!valid()) return int(ERR_INVALID_SOCKET);
  
      return 0;
-diff --git a/android/opengl/shared/OpenglCodecCommon/TextureSharedData.h b/android/opengl/shared/OpenglCodecCommon/TextureSharedData.h
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/TextureSharedData.h b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/TextureSharedData.h
 new file mode 100644
 index 0000000..1372f7a
 --- /dev/null
-+++ b/android/opengl/shared/OpenglCodecCommon/TextureSharedData.h
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/TextureSharedData.h
 @@ -0,0 +1,42 @@
 +/*
 +* Copyright (C) 2016 The Android Open Source Project
@@ -3890,10 +3890,10 @@ index 0000000..1372f7a
 +typedef std::map<GLuint, TextureRec*> SharedTextureDataMap;
 +
 +#endif
-diff --git a/android/opengl/shared/OpenglCodecCommon/codec_defs.h b/android/opengl/shared/OpenglCodecCommon/codec_defs.h
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/codec_defs.h b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/codec_defs.h
 index f19f514..8fab90c 100644
---- a/android/opengl/shared/OpenglCodecCommon/codec_defs.h
-+++ b/android/opengl/shared/OpenglCodecCommon/codec_defs.h
+--- a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/codec_defs.h
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/codec_defs.h
 @@ -18,6 +18,10 @@
  
  #define CODEC_SERVER_PORT 22468
@@ -3906,10 +3906,10 @@ index f19f514..8fab90c 100644
 +};
  
  #endif
-diff --git a/android/opengl/shared/OpenglCodecCommon/glUtils.cpp b/android/opengl/shared/OpenglCodecCommon/glUtils.cpp
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/glUtils.cpp b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/glUtils.cpp
 index a61f76f..7e5e4a2 100644
---- a/android/opengl/shared/OpenglCodecCommon/glUtils.cpp
-+++ b/android/opengl/shared/OpenglCodecCommon/glUtils.cpp
+--- a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/glUtils.cpp
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/glUtils.cpp
 @@ -18,6 +18,8 @@
  #include "ErrorLog.h"
  #include <IOStream.h>
@@ -4170,10 +4170,10 @@ index a61f76f..7e5e4a2 100644
 +    }
 +    return 4;
 +}
-diff --git a/android/opengl/shared/OpenglCodecCommon/glUtils.h b/android/opengl/shared/OpenglCodecCommon/glUtils.h
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/glUtils.h b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/glUtils.h
 index f8857f1..2210699 100644
---- a/android/opengl/shared/OpenglCodecCommon/glUtils.h
-+++ b/android/opengl/shared/OpenglCodecCommon/glUtils.h
+--- a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/glUtils.h
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/glUtils.h
 @@ -46,6 +46,11 @@
  extern "C" {
  #endif
@@ -4287,10 +4287,10 @@ index f8857f1..2210699 100644
 +
  }; // namespace GLUtils
  #endif
-diff --git a/android/opengl/shared/OpenglCodecCommon/gl_base_types.h b/android/opengl/shared/OpenglCodecCommon/gl_base_types.h
+diff --git a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/gl_base_types.h b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/gl_base_types.h
 index d7ecf95..70cb325 100644
---- a/android/opengl/shared/OpenglCodecCommon/gl_base_types.h
-+++ b/android/opengl/shared/OpenglCodecCommon/gl_base_types.h
+--- a/vendor/anbox/android/opengl/shared/OpenglCodecCommon/gl_base_types.h
++++ b/vendor/anbox/android/opengl/shared/OpenglCodecCommon/gl_base_types.h
 @@ -18,12 +18,12 @@
  
  #include <KHR/khrplatform.h>
@@ -4326,10 +4326,10 @@ index d7ecf95..70cb325 100644
  #endif
  
  #endif
-diff --git a/android/opengl/system/GLESv1/Android.mk b/android/opengl/system/GLESv1/Android.mk
+diff --git a/vendor/anbox/android/opengl/system/GLESv1/Android.mk b/vendor/anbox/android/opengl/system/GLESv1/Android.mk
 index 8762c11..1090603 100644
---- a/android/opengl/system/GLESv1/Android.mk
-+++ b/android/opengl/system/GLESv1/Android.mk
+--- a/vendor/anbox/android/opengl/system/GLESv1/Android.mk
++++ b/vendor/anbox/android/opengl/system/GLESv1/Android.mk
 @@ -7,6 +7,10 @@ $(call emugl-import,libOpenglSystemCommon libGLESv1_enc lib_renderControl_enc)
  LOCAL_CFLAGS += -DLOG_TAG=\"GLES_emulation\" -DGL_GLEXT_PROTOTYPES
  
@@ -4342,10 +4342,10 @@ index 8762c11..1090603 100644
 +endif
  
  $(call emugl-end-module)
-diff --git a/android/opengl/system/GLESv1/gl.cpp b/android/opengl/system/GLESv1/gl.cpp
+diff --git a/vendor/anbox/android/opengl/system/GLESv1/gl.cpp b/vendor/anbox/android/opengl/system/GLESv1/gl.cpp
 index 8aaf347..e20b45d 100644
---- a/android/opengl/system/GLESv1/gl.cpp
-+++ b/android/opengl/system/GLESv1/gl.cpp
+--- a/vendor/anbox/android/opengl/system/GLESv1/gl.cpp
++++ b/vendor/anbox/android/opengl/system/GLESv1/gl.cpp
 @@ -54,7 +54,7 @@ void glEGLImageTargetTexture2DOES(void * self, GLenum target, GLeglImageOES img)
      (void)self;
  
@@ -4397,10 +4397,10 @@ index 8aaf347..e20b45d 100644
      }
  
      return s_gl;
-diff --git a/android/opengl/system/GLESv1_enc/GLEncoder.cpp b/android/opengl/system/GLESv1_enc/GLEncoder.cpp
+diff --git a/vendor/anbox/android/opengl/system/GLESv1_enc/GLEncoder.cpp b/vendor/anbox/android/opengl/system/GLESv1_enc/GLEncoder.cpp
 index 8556c27..b698fae 100644
---- a/android/opengl/system/GLESv1_enc/GLEncoder.cpp
-+++ b/android/opengl/system/GLESv1_enc/GLEncoder.cpp
+--- a/vendor/anbox/android/opengl/system/GLESv1_enc/GLEncoder.cpp
++++ b/vendor/anbox/android/opengl/system/GLESv1_enc/GLEncoder.cpp
 @@ -267,28 +267,28 @@ void GLEncoder::s_glVertexPointer(void *self, int size, GLenum type, GLsizei str
  {
      GLEncoder *ctx = (GLEncoder *)self;
@@ -4787,10 +4787,10 @@ index 8556c27..b698fae 100644
  }
  
  void GLEncoder::s_glFinish(void *self)
-diff --git a/android/opengl/system/GLESv1_enc/GLEncoder.h b/android/opengl/system/GLESv1_enc/GLEncoder.h
+diff --git a/vendor/anbox/android/opengl/system/GLESv1_enc/GLEncoder.h b/vendor/anbox/android/opengl/system/GLESv1_enc/GLEncoder.h
 index f6d4b6a..1518030 100644
---- a/android/opengl/system/GLESv1_enc/GLEncoder.h
-+++ b/android/opengl/system/GLESv1_enc/GLEncoder.h
+--- a/vendor/anbox/android/opengl/system/GLESv1_enc/GLEncoder.h
++++ b/vendor/anbox/android/opengl/system/GLESv1_enc/GLEncoder.h
 @@ -30,7 +30,11 @@ public:
      void setClientState(GLClientState *state) {
          m_state = state;
@@ -4832,10 +4832,10 @@ index f6d4b6a..1518030 100644
  public:
      glEGLImageTargetTexture2DOES_client_proc_t m_glEGLImageTargetTexture2DOES_enc;
  
-diff --git a/android/opengl/system/GLESv1_enc/gl_client_context.h b/android/opengl/system/GLESv1_enc/gl_client_context.h
+diff --git a/vendor/anbox/android/opengl/system/GLESv1_enc/gl_client_context.h b/vendor/anbox/android/opengl/system/GLESv1_enc/gl_client_context.h
 index 8074095..6d46a9b 100644
---- a/android/opengl/system/GLESv1_enc/gl_client_context.h
-+++ b/android/opengl/system/GLESv1_enc/gl_client_context.h
+--- a/vendor/anbox/android/opengl/system/GLESv1_enc/gl_client_context.h
++++ b/vendor/anbox/android/opengl/system/GLESv1_enc/gl_client_context.h
 @@ -301,7 +301,7 @@ struct gl_client_context_t {
  	glExtGetProgramBinarySourceQCOM_client_proc_t glExtGetProgramBinarySourceQCOM;
  	glStartTilingQCOM_client_proc_t glStartTilingQCOM;
@@ -4845,10 +4845,10 @@ index 8074095..6d46a9b 100644
  
  	typedef gl_client_context_t *CONTEXT_ACCESSOR_TYPE(void);
  	static void setContextAccessor(CONTEXT_ACCESSOR_TYPE *f);
-diff --git a/android/opengl/system/GLESv1_enc/gl_enc.cpp b/android/opengl/system/GLESv1_enc/gl_enc.cpp
+diff --git a/vendor/anbox/android/opengl/system/GLESv1_enc/gl_enc.cpp b/vendor/anbox/android/opengl/system/GLESv1_enc/gl_enc.cpp
 index 6206cce..79df3d7 100644
---- a/android/opengl/system/GLESv1_enc/gl_enc.cpp
-+++ b/android/opengl/system/GLESv1_enc/gl_enc.cpp
+--- a/vendor/anbox/android/opengl/system/GLESv1_enc/gl_enc.cpp
++++ b/vendor/anbox/android/opengl/system/GLESv1_enc/gl_enc.cpp
 @@ -2,7 +2,6 @@
  // generated by 'emugen'
  
@@ -6132,10 +6132,10 @@ index 6206cce..79df3d7 100644
  			ALOGE("glExtIsProgramBinaryQCOM: GL communication error, please report this issue to b.android.com.\n");
  			abort();
  		}
-diff --git a/android/opengl/system/GLESv1_enc/gl_enc.h b/android/opengl/system/GLESv1_enc/gl_enc.h
+diff --git a/vendor/anbox/android/opengl/system/GLESv1_enc/gl_enc.h b/vendor/anbox/android/opengl/system/GLESv1_enc/gl_enc.h
 index 37de4c4..030bd66 100644
---- a/android/opengl/system/GLESv1_enc/gl_enc.h
-+++ b/android/opengl/system/GLESv1_enc/gl_enc.h
+--- a/vendor/anbox/android/opengl/system/GLESv1_enc/gl_enc.h
++++ b/vendor/anbox/android/opengl/system/GLESv1_enc/gl_enc.h
 @@ -18,6 +18,7 @@ struct gl_encoder_context_t : public gl_client_context_t {
  	ChecksumCalculator *m_checksumCalculator;
  
@@ -6146,10 +6146,10 @@ index 37de4c4..030bd66 100644
 -#endif  // GUARD_gl_encoder_context_t
 \ No newline at end of file
 +#endif  // GUARD_gl_encoder_context_t
-diff --git a/android/opengl/system/GLESv1_enc/gl_entry.cpp b/android/opengl/system/GLESv1_enc/gl_entry.cpp
+diff --git a/vendor/anbox/android/opengl/system/GLESv1_enc/gl_entry.cpp b/vendor/anbox/android/opengl/system/GLESv1_enc/gl_entry.cpp
 index 2b7fa9f..0101e9d 100644
---- a/android/opengl/system/GLESv1_enc/gl_entry.cpp
-+++ b/android/opengl/system/GLESv1_enc/gl_entry.cpp
+--- a/vendor/anbox/android/opengl/system/GLESv1_enc/gl_entry.cpp
++++ b/vendor/anbox/android/opengl/system/GLESv1_enc/gl_entry.cpp
 @@ -4,7 +4,6 @@
  #include <stdlib.h>
  #include "gl_client_context.h"
@@ -6166,10 +6166,10 @@ index 2b7fa9f..0101e9d 100644
  #ifndef GET_CONTEXT
  static gl_client_context_t::CONTEXT_ACCESSOR_TYPE *getCurrentContext = NULL;
  void gl_client_context_t::setContextAccessor(CONTEXT_ACCESSOR_TYPE *f) { getCurrentContext = f; }
-diff --git a/android/opengl/system/GLESv2/Android.mk b/android/opengl/system/GLESv2/Android.mk
+diff --git a/vendor/anbox/android/opengl/system/GLESv2/Android.mk b/vendor/anbox/android/opengl/system/GLESv2/Android.mk
 index 5a23424..c12f369 100644
---- a/android/opengl/system/GLESv2/Android.mk
-+++ b/android/opengl/system/GLESv2/Android.mk
+--- a/vendor/anbox/android/opengl/system/GLESv2/Android.mk
++++ b/vendor/anbox/android/opengl/system/GLESv2/Android.mk
 @@ -7,6 +7,10 @@ $(call emugl-import,libOpenglSystemCommon libGLESv2_enc lib_renderControl_enc)
  LOCAL_CFLAGS += -DLOG_TAG=\"GLESv2_emulation\" -DGL_GLEXT_PROTOTYPES
  
@@ -6182,10 +6182,10 @@ index 5a23424..c12f369 100644
 +endif
  
  $(call emugl-end-module)
-diff --git a/android/opengl/system/GLESv2/gl2.cpp b/android/opengl/system/GLESv2/gl2.cpp
+diff --git a/vendor/anbox/android/opengl/system/GLESv2/gl2.cpp b/vendor/anbox/android/opengl/system/GLESv2/gl2.cpp
 index 5aaac5f..b75f899 100644
---- a/android/opengl/system/GLESv2/gl2.cpp
-+++ b/android/opengl/system/GLESv2/gl2.cpp
+--- a/vendor/anbox/android/opengl/system/GLESv2/gl2.cpp
++++ b/vendor/anbox/android/opengl/system/GLESv2/gl2.cpp
 @@ -57,6 +57,7 @@ void glEGLImageTargetTexture2DOES(void * self, GLenum target, GLeglImageOES img)
      DBG("glEGLImageTargetTexture2DOES v2 target=%#x img=%p\n", target, img);
  
@@ -6246,10 +6246,10 @@ index 5aaac5f..b75f899 100644
  } //extern
 -
 -
-diff --git a/android/opengl/system/GLESv2_enc/Android.mk b/android/opengl/system/GLESv2_enc/Android.mk
+diff --git a/vendor/anbox/android/opengl/system/GLESv2_enc/Android.mk b/vendor/anbox/android/opengl/system/GLESv2_enc/Android.mk
 index e76a175..c5081d3 100644
---- a/android/opengl/system/GLESv2_enc/Android.mk
-+++ b/android/opengl/system/GLESv2_enc/Android.mk
+--- a/vendor/anbox/android/opengl/system/GLESv2_enc/Android.mk
++++ b/vendor/anbox/android/opengl/system/GLESv2_enc/Android.mk
 @@ -6,9 +6,10 @@ $(call emugl-begin-shared-library,libGLESv2_enc)
  LOCAL_SRC_FILES := \
      GL2EncoderUtils.cpp \
@@ -6262,12 +6262,12 @@ index e76a175..c5081d3 100644
  
  LOCAL_CFLAGS += -DLOG_TAG=\"emuglGLESv2_enc\"
  
-diff --git a/android/opengl/system/GLESv2_enc/GL2Encoder.cpp b/android/opengl/system/GLESv2_enc/GL2Encoder.cpp
+diff --git a/vendor/anbox/android/opengl/system/GLESv2_enc/GL2Encoder.cpp b/vendor/anbox/android/opengl/system/GLESv2_enc/GL2Encoder.cpp
 old mode 100755
 new mode 100644
 index 268f76c..66b9e19
---- a/android/opengl/system/GLESv2_enc/GL2Encoder.cpp
-+++ b/android/opengl/system/GLESv2_enc/GL2Encoder.cpp
+--- a/vendor/anbox/android/opengl/system/GLESv2_enc/GL2Encoder.cpp
++++ b/vendor/anbox/android/opengl/system/GLESv2_enc/GL2Encoder.cpp
 @@ -15,36 +15,63 @@
  */
  
@@ -10679,10 +10679,10 @@ index 268f76c..66b9e19
 +    ctx->m_glTexStorage2DMultisample_enc(ctx, target, samples, internalformat, width, height, fixedsamplelocations);
 +}
 +
-diff --git a/android/opengl/system/GLESv2_enc/GL2Encoder.h b/android/opengl/system/GLESv2_enc/GL2Encoder.h
+diff --git a/vendor/anbox/android/opengl/system/GLESv2_enc/GL2Encoder.h b/vendor/anbox/android/opengl/system/GLESv2_enc/GL2Encoder.h
 index e3d343a..11162ee 100644
---- a/android/opengl/system/GLESv2_enc/GL2Encoder.h
-+++ b/android/opengl/system/GLESv2_enc/GL2Encoder.h
+--- a/vendor/anbox/android/opengl/system/GLESv2_enc/GL2Encoder.h
++++ b/vendor/anbox/android/opengl/system/GLESv2_enc/GL2Encoder.h
 @@ -21,6 +21,8 @@
  #include "GLSharedGroup.h"
  #include "FixedBuffer.h"
@@ -11171,10 +11171,10 @@ index e3d343a..11162ee 100644
  
  public:
      glEGLImageTargetTexture2DOES_client_proc_t m_glEGLImageTargetTexture2DOES_enc;
-diff --git a/android/opengl/system/GLESv2_enc/GL2EncoderUtils.cpp b/android/opengl/system/GLESv2_enc/GL2EncoderUtils.cpp
+diff --git a/vendor/anbox/android/opengl/system/GLESv2_enc/GL2EncoderUtils.cpp b/vendor/anbox/android/opengl/system/GLESv2_enc/GL2EncoderUtils.cpp
 index fc2a723..d1f73cd 100644
---- a/android/opengl/system/GLESv2_enc/GL2EncoderUtils.cpp
-+++ b/android/opengl/system/GLESv2_enc/GL2EncoderUtils.cpp
+--- a/vendor/anbox/android/opengl/system/GLESv2_enc/GL2EncoderUtils.cpp
++++ b/vendor/anbox/android/opengl/system/GLESv2_enc/GL2EncoderUtils.cpp
 @@ -18,19 +18,22 @@
  #include "GL2Encoder.h"
  #include <assert.h>
@@ -11229,10 +11229,10 @@ index fc2a723..d1f73cd 100644
 +}
 +
  }  // namespace glesv2_enc
-diff --git a/android/opengl/system/GLESv2_enc/GL2EncoderUtils.h b/android/opengl/system/GLESv2_enc/GL2EncoderUtils.h
+diff --git a/vendor/anbox/android/opengl/system/GLESv2_enc/GL2EncoderUtils.h b/vendor/anbox/android/opengl/system/GLESv2_enc/GL2EncoderUtils.h
 index 211e966..8d39ca3 100644
---- a/android/opengl/system/GLESv2_enc/GL2EncoderUtils.h
-+++ b/android/opengl/system/GLESv2_enc/GL2EncoderUtils.h
+--- a/vendor/anbox/android/opengl/system/GLESv2_enc/GL2EncoderUtils.h
++++ b/vendor/anbox/android/opengl/system/GLESv2_enc/GL2EncoderUtils.h
 @@ -21,6 +21,9 @@ namespace glesv2_enc {
  size_t pixelDataSize(void *self, GLsizei width, GLsizei height, GLenum format, GLenum type, int pack);
  size_t pixelDataSize3D(void *self, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, int pack);
@@ -11243,11 +11243,11 @@ index 211e966..8d39ca3 100644
  
  }  // namespace glesv2_enc
  
-diff --git a/android/opengl/system/GLESv2_enc/GLESv2Validation.cpp b/android/opengl/system/GLESv2_enc/GLESv2Validation.cpp
+diff --git a/vendor/anbox/android/opengl/system/GLESv2_enc/GLESv2Validation.cpp b/vendor/anbox/android/opengl/system/GLESv2_enc/GLESv2Validation.cpp
 new file mode 100644
 index 0000000..c703325
 --- /dev/null
-+++ b/android/opengl/system/GLESv2_enc/GLESv2Validation.cpp
++++ b/vendor/anbox/android/opengl/system/GLESv2_enc/GLESv2Validation.cpp
 @@ -0,0 +1,841 @@
 +/*
 +* Copyright (C) 2016 The Android Open Source Project
@@ -12090,11 +12090,11 @@ index 0000000..c703325
 +}
 +
 +} // namespace GLESv2Validation
-diff --git a/android/opengl/system/GLESv2_enc/GLESv2Validation.h b/android/opengl/system/GLESv2_enc/GLESv2Validation.h
+diff --git a/vendor/anbox/android/opengl/system/GLESv2_enc/GLESv2Validation.h b/vendor/anbox/android/opengl/system/GLESv2_enc/GLESv2Validation.h
 new file mode 100644
 index 0000000..a37bd58
 --- /dev/null
-+++ b/android/opengl/system/GLESv2_enc/GLESv2Validation.h
++++ b/vendor/anbox/android/opengl/system/GLESv2_enc/GLESv2Validation.h
 @@ -0,0 +1,82 @@
 +/*
 +* Copyright (C) 2016 The Android Open Source Project
@@ -12178,10 +12178,10 @@ index 0000000..a37bd58
 +} // namespace GLESv2Validation
 +
 +#endif
-diff --git a/android/opengl/system/GLESv2_enc/gl2_client_context.cpp b/android/opengl/system/GLESv2_enc/gl2_client_context.cpp
+diff --git a/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_client_context.cpp b/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_client_context.cpp
 index f903542..9eb4ac4 100644
---- a/android/opengl/system/GLESv2_enc/gl2_client_context.cpp
-+++ b/android/opengl/system/GLESv2_enc/gl2_client_context.cpp
+--- a/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_client_context.cpp
++++ b/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_client_context.cpp
 @@ -218,6 +218,209 @@ int gl2_client_context_t::initDispatchByName(void *(*getProc)(const char *, void
  	glGetCompressedTextureFormats = (glGetCompressedTextureFormats_client_proc_t) getProc("glGetCompressedTextureFormats", userData);
  	glShaderString = (glShaderString_client_proc_t) getProc("glShaderString", userData);
@@ -12392,10 +12392,10 @@ index f903542..9eb4ac4 100644
  	return 0;
  }
  
-diff --git a/android/opengl/system/GLESv2_enc/gl2_client_context.h b/android/opengl/system/GLESv2_enc/gl2_client_context.h
+diff --git a/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_client_context.h b/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_client_context.h
 index 7035fec..6616e53 100644
---- a/android/opengl/system/GLESv2_enc/gl2_client_context.h
-+++ b/android/opengl/system/GLESv2_enc/gl2_client_context.h
+--- a/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_client_context.h
++++ b/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_client_context.h
 @@ -218,7 +218,210 @@ struct gl2_client_context_t {
  	glGetCompressedTextureFormats_client_proc_t glGetCompressedTextureFormats;
  	glShaderString_client_proc_t glShaderString;
@@ -12608,10 +12608,10 @@ index 7035fec..6616e53 100644
  
  	typedef gl2_client_context_t *CONTEXT_ACCESSOR_TYPE(void);
  	static void setContextAccessor(CONTEXT_ACCESSOR_TYPE *f);
-diff --git a/android/opengl/system/GLESv2_enc/gl2_client_proc.h b/android/opengl/system/GLESv2_enc/gl2_client_proc.h
+diff --git a/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_client_proc.h b/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_client_proc.h
 index 445910d..8c88678 100644
---- a/android/opengl/system/GLESv2_enc/gl2_client_proc.h
-+++ b/android/opengl/system/GLESv2_enc/gl2_client_proc.h
+--- a/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_client_proc.h
++++ b/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_client_proc.h
 @@ -217,6 +217,209 @@ typedef void (gl2_APIENTRY *glDrawElementsData_client_proc_t) (void * ctx, GLenu
  typedef void (gl2_APIENTRY *glGetCompressedTextureFormats_client_proc_t) (void * ctx, int, GLint*);
  typedef void (gl2_APIENTRY *glShaderString_client_proc_t) (void * ctx, GLuint, const GLchar*, GLsizei);
@@ -12822,10 +12822,10 @@ index 445910d..8c88678 100644
  
  
  #endif
-diff --git a/android/opengl/system/GLESv2_enc/gl2_enc.cpp b/android/opengl/system/GLESv2_enc/gl2_enc.cpp
+diff --git a/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_enc.cpp b/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_enc.cpp
 index 615dcc1..8357c68 100644
---- a/android/opengl/system/GLESv2_enc/gl2_enc.cpp
-+++ b/android/opengl/system/GLESv2_enc/gl2_enc.cpp
+--- a/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_enc.cpp
++++ b/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_enc.cpp
 @@ -2,7 +2,6 @@
  // generated by 'emugen'
  
@@ -19947,10 +19947,10 @@ index 615dcc1..8357c68 100644
 +	this->glGetTexLevelParameteriv = &glGetTexLevelParameteriv_enc;
  }
  
-diff --git a/android/opengl/system/GLESv2_enc/gl2_enc.h b/android/opengl/system/GLESv2_enc/gl2_enc.h
+diff --git a/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_enc.h b/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_enc.h
 index 760d729..4129b9d 100644
---- a/android/opengl/system/GLESv2_enc/gl2_enc.h
-+++ b/android/opengl/system/GLESv2_enc/gl2_enc.h
+--- a/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_enc.h
++++ b/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_enc.h
 @@ -19,6 +19,7 @@ struct gl2_encoder_context_t : public gl2_client_context_t {
  	ChecksumCalculator *m_checksumCalculator;
  
@@ -19961,10 +19961,10 @@ index 760d729..4129b9d 100644
 -#endif  // GUARD_gl2_encoder_context_t
 \ No newline at end of file
 +#endif  // GUARD_gl2_encoder_context_t
-diff --git a/android/opengl/system/GLESv2_enc/gl2_entry.cpp b/android/opengl/system/GLESv2_enc/gl2_entry.cpp
+diff --git a/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_entry.cpp b/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_entry.cpp
 index 3812aae..5713921 100644
---- a/android/opengl/system/GLESv2_enc/gl2_entry.cpp
-+++ b/android/opengl/system/GLESv2_enc/gl2_entry.cpp
+--- a/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_entry.cpp
++++ b/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_entry.cpp
 @@ -4,7 +4,6 @@
  #include <stdlib.h>
  #include "gl2_client_context.h"
@@ -21495,10 +21495,10 @@ index 3812aae..5713921 100644
 +	ctx->glGetTexLevelParameteriv(ctx, target, level, pname, params);
 +}
 +
-diff --git a/android/opengl/system/GLESv2_enc/gl2_ftable.h b/android/opengl/system/GLESv2_enc/gl2_ftable.h
+diff --git a/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_ftable.h b/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_ftable.h
 index 25df4f0..99fe978 100644
---- a/android/opengl/system/GLESv2_enc/gl2_ftable.h
-+++ b/android/opengl/system/GLESv2_enc/gl2_ftable.h
+--- a/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_ftable.h
++++ b/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_ftable.h
 @@ -209,6 +209,178 @@ static const struct _gl2_funcs_by_name {
  	{"glExtGetProgramBinarySourceQCOM", (void*)glExtGetProgramBinarySourceQCOM},
  	{"glStartTilingQCOM", (void*)glStartTilingQCOM},
@@ -21678,10 +21678,10 @@ index 25df4f0..99fe978 100644
  };
  static const int gl2_num_funcs = sizeof(gl2_funcs_by_name) / sizeof(struct _gl2_funcs_by_name);
  
-diff --git a/android/opengl/system/GLESv2_enc/gl2_opcodes.h b/android/opengl/system/GLESv2_enc/gl2_opcodes.h
+diff --git a/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_opcodes.h b/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_opcodes.h
 index 5e7857f..497ebfb 100644
---- a/android/opengl/system/GLESv2_enc/gl2_opcodes.h
-+++ b/android/opengl/system/GLESv2_enc/gl2_opcodes.h
+--- a/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_opcodes.h
++++ b/vendor/anbox/android/opengl/system/GLESv2_enc/gl2_opcodes.h
 @@ -211,7 +211,210 @@
  #define OP_glGetCompressedTextureFormats 					2253
  #define OP_glShaderString 					2254
@@ -21894,10 +21894,10 @@ index 5e7857f..497ebfb 100644
  
  
  #endif
-diff --git a/android/opengl/system/OpenglSystemCommon/EGLClientIface.h b/android/opengl/system/OpenglSystemCommon/EGLClientIface.h
+diff --git a/vendor/anbox/android/opengl/system/OpenglSystemCommon/EGLClientIface.h b/vendor/anbox/android/opengl/system/OpenglSystemCommon/EGLClientIface.h
 index 3c8cb55..35b66bf 100644
---- a/android/opengl/system/OpenglSystemCommon/EGLClientIface.h
-+++ b/android/opengl/system/OpenglSystemCommon/EGLClientIface.h
+--- a/vendor/anbox/android/opengl/system/OpenglSystemCommon/EGLClientIface.h
++++ b/vendor/anbox/android/opengl/system/OpenglSystemCommon/EGLClientIface.h
 @@ -28,6 +28,7 @@ typedef struct {
      void* (*getProcAddress)(const char *funcName);
      void (*init)();
@@ -21906,10 +21906,10 @@ index 3c8cb55..35b66bf 100644
  } EGLClient_glesInterface;
  
  //
-diff --git a/android/opengl/system/OpenglSystemCommon/EGLImage.h b/android/opengl/system/OpenglSystemCommon/EGLImage.h
+diff --git a/vendor/anbox/android/opengl/system/OpenglSystemCommon/EGLImage.h b/vendor/anbox/android/opengl/system/OpenglSystemCommon/EGLImage.h
 index 5edb44e..07148e9 100644
---- a/android/opengl/system/OpenglSystemCommon/EGLImage.h
-+++ b/android/opengl/system/OpenglSystemCommon/EGLImage.h
+--- a/vendor/anbox/android/opengl/system/OpenglSystemCommon/EGLImage.h
++++ b/vendor/anbox/android/opengl/system/OpenglSystemCommon/EGLImage.h
 @@ -19,6 +19,7 @@
  #include <EGL/egl.h>
  #include <EGL/eglext.h>
@@ -21918,11 +21918,11 @@ index 5edb44e..07148e9 100644
  #include <system/window.h>
  
  struct EGLImage_t
-diff --git a/android/opengl/system/OpenglSystemCommon/FormatConversions.cpp b/android/opengl/system/OpenglSystemCommon/FormatConversions.cpp
+diff --git a/vendor/anbox/android/opengl/system/OpenglSystemCommon/FormatConversions.cpp b/vendor/anbox/android/opengl/system/OpenglSystemCommon/FormatConversions.cpp
 new file mode 100644
 index 0000000..8213602
 --- /dev/null
-+++ b/android/opengl/system/OpenglSystemCommon/FormatConversions.cpp
++++ b/vendor/anbox/android/opengl/system/OpenglSystemCommon/FormatConversions.cpp
 @@ -0,0 +1,329 @@
 +/*
 + * Copyright (C) 2016 Google, Inc.
@@ -22253,11 +22253,11 @@ index 0000000..8213602
 +        dst += dst_line_len;
 +    }
 +}
-diff --git a/android/opengl/system/OpenglSystemCommon/FormatConversions.h b/android/opengl/system/OpenglSystemCommon/FormatConversions.h
+diff --git a/vendor/anbox/android/opengl/system/OpenglSystemCommon/FormatConversions.h b/vendor/anbox/android/opengl/system/OpenglSystemCommon/FormatConversions.h
 new file mode 100644
 index 0000000..6e15f36
 --- /dev/null
-+++ b/android/opengl/system/OpenglSystemCommon/FormatConversions.h
++++ b/vendor/anbox/android/opengl/system/OpenglSystemCommon/FormatConversions.h
 @@ -0,0 +1,46 @@
 +/*
 + * Copyright (C) 2016 Google, Inc.
@@ -22305,10 +22305,10 @@ index 0000000..6e15f36
 +                                   int width, int height, int top, int left,
 +                                   int bpp);
 +#endif
-diff --git a/android/opengl/system/OpenglSystemCommon/HostConnection.cpp b/android/opengl/system/OpenglSystemCommon/HostConnection.cpp
+diff --git a/vendor/anbox/android/opengl/system/OpenglSystemCommon/HostConnection.cpp b/vendor/anbox/android/opengl/system/OpenglSystemCommon/HostConnection.cpp
 index bc3b634..e9b9c55 100644
---- a/android/opengl/system/OpenglSystemCommon/HostConnection.cpp
-+++ b/android/opengl/system/OpenglSystemCommon/HostConnection.cpp
+--- a/vendor/anbox/android/opengl/system/OpenglSystemCommon/HostConnection.cpp
++++ b/vendor/anbox/android/opengl/system/OpenglSystemCommon/HostConnection.cpp
 @@ -14,15 +14,16 @@
  * limitations under the License.
  */
@@ -22509,10 +22509,10 @@ index bc3b634..e9b9c55 100644
 +        rcEnc->setGLESMaxVersion(GLES_MAX_VERSION_3_0);
 +    }
 +}
-diff --git a/android/opengl/system/OpenglSystemCommon/HostConnection.h b/android/opengl/system/OpenglSystemCommon/HostConnection.h
+diff --git a/vendor/anbox/android/opengl/system/OpenglSystemCommon/HostConnection.h b/vendor/anbox/android/opengl/system/OpenglSystemCommon/HostConnection.h
 index a52fbfa..54ac9ae 100644
---- a/android/opengl/system/OpenglSystemCommon/HostConnection.h
-+++ b/android/opengl/system/OpenglSystemCommon/HostConnection.h
+--- a/vendor/anbox/android/opengl/system/OpenglSystemCommon/HostConnection.h
++++ b/vendor/anbox/android/opengl/system/OpenglSystemCommon/HostConnection.h
 @@ -20,20 +20,95 @@
  #include "renderControl_enc.h"
  #include "ChecksumCalculator.h"
@@ -22651,10 +22651,10 @@ index a52fbfa..54ac9ae 100644
  };
  
  #endif
-diff --git a/android/opengl/system/OpenglSystemCommon/QemuPipeStream.cpp b/android/opengl/system/OpenglSystemCommon/QemuPipeStream.cpp
+diff --git a/vendor/anbox/android/opengl/system/OpenglSystemCommon/QemuPipeStream.cpp b/vendor/anbox/android/opengl/system/OpenglSystemCommon/QemuPipeStream.cpp
 index 581aec3..45cc666 100644
---- a/android/opengl/system/OpenglSystemCommon/QemuPipeStream.cpp
-+++ b/android/opengl/system/OpenglSystemCommon/QemuPipeStream.cpp
+--- a/vendor/anbox/android/opengl/system/OpenglSystemCommon/QemuPipeStream.cpp
++++ b/vendor/anbox/android/opengl/system/OpenglSystemCommon/QemuPipeStream.cpp
 @@ -51,8 +51,11 @@ QemuPipeStream::~QemuPipeStream()
  
  int QemuPipeStream::connect(void)
@@ -22680,10 +22680,10 @@ index 581aec3..45cc666 100644
  const unsigned char *QemuPipeStream::readFully(void *buf, size_t len)
  {
      //DBG(">> QemuPipeStream::readFully %d\n", len);
-diff --git a/android/opengl/system/OpenglSystemCommon/QemuPipeStream.h b/android/opengl/system/OpenglSystemCommon/QemuPipeStream.h
+diff --git a/vendor/anbox/android/opengl/system/OpenglSystemCommon/QemuPipeStream.h b/vendor/anbox/android/opengl/system/OpenglSystemCommon/QemuPipeStream.h
 index 57ee399..15f74e6 100644
---- a/android/opengl/system/OpenglSystemCommon/QemuPipeStream.h
-+++ b/android/opengl/system/OpenglSystemCommon/QemuPipeStream.h
+--- a/vendor/anbox/android/opengl/system/OpenglSystemCommon/QemuPipeStream.h
++++ b/vendor/anbox/android/opengl/system/OpenglSystemCommon/QemuPipeStream.h
 @@ -41,6 +41,7 @@ public:
  
      virtual int writeFully(const void *buf, size_t len);
@@ -22692,10 +22692,10 @@ index 57ee399..15f74e6 100644
  private:
      int m_sock;
      size_t m_bufsize;
-diff --git a/android/opengl/system/OpenglSystemCommon/ThreadInfo.cpp b/android/opengl/system/OpenglSystemCommon/ThreadInfo.cpp
+diff --git a/vendor/anbox/android/opengl/system/OpenglSystemCommon/ThreadInfo.cpp b/vendor/anbox/android/opengl/system/OpenglSystemCommon/ThreadInfo.cpp
 index 04ce508..9e11624 100644
---- a/android/opengl/system/OpenglSystemCommon/ThreadInfo.cpp
-+++ b/android/opengl/system/OpenglSystemCommon/ThreadInfo.cpp
+--- a/vendor/anbox/android/opengl/system/OpenglSystemCommon/ThreadInfo.cpp
++++ b/vendor/anbox/android/opengl/system/OpenglSystemCommon/ThreadInfo.cpp
 @@ -18,19 +18,30 @@
  
  thread_store_t s_tls = THREAD_STORE_INITIALIZER;
@@ -22729,10 +22729,10 @@ index 04ce508..9e11624 100644
      if (ti) return ti;
  
      ti = new EGLThreadInfo();
-diff --git a/android/opengl/system/OpenglSystemCommon/ThreadInfo.h b/android/opengl/system/OpenglSystemCommon/ThreadInfo.h
+diff --git a/vendor/anbox/android/opengl/system/OpenglSystemCommon/ThreadInfo.h b/vendor/anbox/android/opengl/system/OpenglSystemCommon/ThreadInfo.h
 index 9a5dc88..06d9267 100644
---- a/android/opengl/system/OpenglSystemCommon/ThreadInfo.h
-+++ b/android/opengl/system/OpenglSystemCommon/ThreadInfo.h
+--- a/vendor/anbox/android/opengl/system/OpenglSystemCommon/ThreadInfo.h
++++ b/vendor/anbox/android/opengl/system/OpenglSystemCommon/ThreadInfo.h
 @@ -18,15 +18,14 @@
  
  #include "HostConnection.h"
@@ -22792,11 +22792,11 @@ index 9a5dc88..06d9267 100644
 +}
  
  #endif // of _THREAD_INFO_H
-diff --git a/android/opengl/system/OpenglSystemCommon/goldfishHwc2.cpp b/android/opengl/system/OpenglSystemCommon/goldfishHwc2.cpp
+diff --git a/vendor/anbox/android/opengl/system/OpenglSystemCommon/goldfishHwc2.cpp b/vendor/anbox/android/opengl/system/OpenglSystemCommon/goldfishHwc2.cpp
 new file mode 100644
 index 0000000..888ba89
 --- /dev/null
-+++ b/android/opengl/system/OpenglSystemCommon/goldfishHwc2.cpp
++++ b/vendor/anbox/android/opengl/system/OpenglSystemCommon/goldfishHwc2.cpp
 @@ -0,0 +1,22 @@
 +/*
 +* Copyright (C) 2017 The Android Open Source Project
@@ -22820,11 +22820,11 @@ index 0000000..888ba89
 +extern "C" void surfaceInterface_init() { }
 +extern "C" void surfaceInterface_setAsyncModeForWindow(void* window) { }
 +#endif
-diff --git a/android/opengl/system/OpenglSystemCommon/goldfishHwc2.h b/android/opengl/system/OpenglSystemCommon/goldfishHwc2.h
+diff --git a/vendor/anbox/android/opengl/system/OpenglSystemCommon/goldfishHwc2.h b/vendor/anbox/android/opengl/system/OpenglSystemCommon/goldfishHwc2.h
 new file mode 100644
 index 0000000..cb1a396
 --- /dev/null
-+++ b/android/opengl/system/OpenglSystemCommon/goldfishHwc2.h
++++ b/vendor/anbox/android/opengl/system/OpenglSystemCommon/goldfishHwc2.h
 @@ -0,0 +1,25 @@
 +/*
 +* Copyright (C) 2017 The Android Open Source Project
@@ -22851,10 +22851,10 @@ index 0000000..cb1a396
 +extern "C" void surfaceInterface_init();
 +extern "C" void surfaceInterface_setAsyncModeForWindow(void* window);
 +#endif
-diff --git a/android/opengl/system/egl/Android.mk b/android/opengl/system/egl/Android.mk
+diff --git a/vendor/anbox/android/opengl/system/egl/Android.mk b/vendor/anbox/android/opengl/system/egl/Android.mk
 index 241cefe..37aadd7 100644
---- a/android/opengl/system/egl/Android.mk
-+++ b/android/opengl/system/egl/Android.mk
+--- a/vendor/anbox/android/opengl/system/egl/Android.mk
++++ b/vendor/anbox/android/opengl/system/egl/Android.mk
 @@ -13,8 +13,12 @@ LOCAL_SRC_FILES := \
      egl.cpp \
      ClientAPIExts.cpp
@@ -22880,10 +22880,10 @@ index 241cefe..37aadd7 100644
  include $(BUILD_PREBUILT)
  endif # TARGET_PRODUCT in 'full full_x86 full_mips sdk sdk_x86 sdk_mips google_sdk google_sdk_x86 google_sdk_mips')
  
-diff --git a/android/opengl/system/egl/ClientAPIExts.cpp b/android/opengl/system/egl/ClientAPIExts.cpp
+diff --git a/vendor/anbox/android/opengl/system/egl/ClientAPIExts.cpp b/vendor/anbox/android/opengl/system/egl/ClientAPIExts.cpp
 index 5e81afe..0f02dcb 100644
---- a/android/opengl/system/egl/ClientAPIExts.cpp
-+++ b/android/opengl/system/egl/ClientAPIExts.cpp
+--- a/vendor/anbox/android/opengl/system/egl/ClientAPIExts.cpp
++++ b/vendor/anbox/android/opengl/system/egl/ClientAPIExts.cpp
 @@ -27,11 +27,12 @@ namespace ClientAPIExts
  // typename has the form __egl_{funcname}_t
  //
@@ -22944,10 +22944,10 @@ index 5e81afe..0f02dcb 100644
      }
  
  #include "ClientAPIExts.in"
-diff --git a/android/opengl/system/egl/egl.cpp b/android/opengl/system/egl/egl.cpp
+diff --git a/vendor/anbox/android/opengl/system/egl/egl.cpp b/vendor/anbox/android/opengl/system/egl/egl.cpp
 index ae5a889..a6f1906 100644
---- a/android/opengl/system/egl/egl.cpp
-+++ b/android/opengl/system/egl/egl.cpp
+--- a/vendor/anbox/android/opengl/system/egl/egl.cpp
++++ b/vendor/anbox/android/opengl/system/egl/egl.cpp
 @@ -14,11 +14,15 @@
  * limitations under the License.
  */
@@ -24168,10 +24168,10 @@ index ae5a889..a6f1906 100644
 +    (void)flags;
 +    return EGL_TRUE;
 +}
-diff --git a/android/opengl/system/egl/eglContext.h b/android/opengl/system/egl/eglContext.h
+diff --git a/vendor/anbox/android/opengl/system/egl/eglContext.h b/vendor/anbox/android/opengl/system/egl/eglContext.h
 index 5b6a428..0674833 100644
---- a/android/opengl/system/egl/eglContext.h
-+++ b/android/opengl/system/egl/eglContext.h
+--- a/vendor/anbox/android/opengl/system/egl/eglContext.h
++++ b/vendor/anbox/android/opengl/system/egl/eglContext.h
 @@ -26,7 +26,7 @@ struct EGLContext_t {
          NEVER_CURRENT   =   0x00020000
      };
@@ -24208,10 +24208,10 @@ index 5b6a428..0674833 100644
  };
  
  #endif
-diff --git a/android/opengl/system/egl/eglDisplay.cpp b/android/opengl/system/egl/eglDisplay.cpp
+diff --git a/vendor/anbox/android/opengl/system/egl/eglDisplay.cpp b/vendor/anbox/android/opengl/system/egl/eglDisplay.cpp
 index 9340482..455af87 100644
---- a/android/opengl/system/egl/eglDisplay.cpp
-+++ b/android/opengl/system/egl/eglDisplay.cpp
+--- a/vendor/anbox/android/opengl/system/egl/eglDisplay.cpp
++++ b/vendor/anbox/android/opengl/system/egl/eglDisplay.cpp
 @@ -15,8 +15,12 @@
  */
  #include "eglDisplay.h"
@@ -24331,10 +24331,10 @@ index 9340482..455af87 100644
 +    pthread_mutex_unlock(&m_surfaceLock);
 +}
 +
-diff --git a/android/opengl/system/egl/eglDisplay.h b/android/opengl/system/egl/eglDisplay.h
+diff --git a/vendor/anbox/android/opengl/system/egl/eglDisplay.h b/vendor/anbox/android/opengl/system/egl/eglDisplay.h
 index 9d979d9..ba39201 100644
---- a/android/opengl/system/egl/eglDisplay.h
-+++ b/android/opengl/system/egl/eglDisplay.h
+--- a/vendor/anbox/android/opengl/system/egl/eglDisplay.h
++++ b/vendor/anbox/android/opengl/system/egl/eglDisplay.h
 @@ -23,9 +23,16 @@
  #include "EGLClientIface.h"
  #include <utils/KeyedVector.h>
@@ -24385,11 +24385,11 @@ index 9d979d9..ba39201 100644
  };
  
  #endif
-diff --git a/android/opengl/system/egl/eglSync.h b/android/opengl/system/egl/eglSync.h
+diff --git a/vendor/anbox/android/opengl/system/egl/eglSync.h b/vendor/anbox/android/opengl/system/egl/eglSync.h
 new file mode 100644
 index 0000000..9f84a4e
 --- /dev/null
-+++ b/android/opengl/system/egl/eglSync.h
++++ b/vendor/anbox/android/opengl/system/egl/eglSync.h
 @@ -0,0 +1,42 @@
 +/*
 +* Copyright (C) 2016 The Android Open Source Project
@@ -24433,11 +24433,11 @@ index 0000000..9f84a4e
 +};
 +
 +#endif
-diff --git a/android/opengl/system/egl/goldfish_sync.h b/android/opengl/system/egl/goldfish_sync.h
+diff --git a/vendor/anbox/android/opengl/system/egl/goldfish_sync.h b/vendor/anbox/android/opengl/system/egl/goldfish_sync.h
 new file mode 100644
 index 0000000..4667a77
 --- /dev/null
-+++ b/android/opengl/system/egl/goldfish_sync.h
++++ b/vendor/anbox/android/opengl/system/egl/goldfish_sync.h
 @@ -0,0 +1,65 @@
 +/*
 + * Copyright (C) 2016 Google, Inc.
@@ -24504,10 +24504,10 @@ index 0000000..4667a77
 +}
 +
 +#endif
-diff --git a/android/opengl/system/gralloc/Android.mk b/android/opengl/system/gralloc/Android.mk
+diff --git a/vendor/anbox/android/opengl/system/gralloc/Android.mk b/vendor/anbox/android/opengl/system/gralloc/Android.mk
 index 71ac2f2..190bfd6 100644
---- a/android/opengl/system/gralloc/Android.mk
-+++ b/android/opengl/system/gralloc/Android.mk
+--- a/vendor/anbox/android/opengl/system/gralloc/Android.mk
++++ b/vendor/anbox/android/opengl/system/gralloc/Android.mk
 @@ -2,11 +2,12 @@ ifneq (false,$(BUILD_EMULATOR_OPENGL_DRIVER))
  
  LOCAL_PATH := $(call my-dir)
@@ -24540,10 +24540,10 @@ index 71ac2f2..190bfd6 100644
 +endif  # defined(BRILLO)
  
  endif # BUILD_EMULATOR_OPENGL_DRIVER != false
-diff --git a/android/opengl/system/renderControl_enc/renderControl.attrib b/android/opengl/system/renderControl_enc/renderControl.attrib
+diff --git a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl.attrib b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl.attrib
 index 0fa0469..fbf52f7 100644
---- a/android/opengl/system/renderControl_enc/renderControl.attrib
-+++ b/android/opengl/system/renderControl_enc/renderControl.attrib
+--- a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl.attrib
++++ b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl.attrib
 @@ -43,3 +43,13 @@ rcUpdateColorBuffer
  rcCloseColorBuffer
      flag flushOnEncode
@@ -24558,10 +24558,10 @@ index 0fa0469..fbf52f7 100644
 +    len glsync_out sizeof(uint64_t)
 +    dir syncthread_out out
 +    len syncthread_out sizeof(uint64_t)
-diff --git a/android/opengl/system/renderControl_enc/renderControl.in b/android/opengl/system/renderControl_enc/renderControl.in
+diff --git a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl.in b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl.in
 index 47b8533..8be1886 100644
---- a/android/opengl/system/renderControl_enc/renderControl.in
-+++ b/android/opengl/system/renderControl_enc/renderControl.in
+--- a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl.in
++++ b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl.in
 @@ -27,9 +27,11 @@ GL_ENTRY(int, rcOpenColorBuffer2, uint32_t colorbuffer)
  GL_ENTRY(uint32_t, rcCreateClientImage, uint32_t context, EGLenum target, GLuint buffer)
  GL_ENTRY(int, rcDestroyClientImage, uint32_t image)
@@ -24580,10 +24580,10 @@ index 47b8533..8be1886 100644
 +GL_ENTRY(void, rcFlushWindowColorBufferAsync, uint32_t windowSurface)
 +GL_ENTRY(uint32_t, rcCreateClientImagePuid, uint32_t context, EGLenum target, GLuint buffer, uint64_t puid)
 +GL_ENTRY(int, rcDestroyClientImagePuid, uint32_t image, uint64_t puid)
-diff --git a/android/opengl/system/renderControl_enc/renderControl.types b/android/opengl/system/renderControl_enc/renderControl.types
+diff --git a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl.types b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl.types
 index a7d96ab..578492b 100644
---- a/android/opengl/system/renderControl_enc/renderControl.types
-+++ b/android/opengl/system/renderControl_enc/renderControl.types
+--- a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl.types
++++ b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl.types
 @@ -1,11 +1,14 @@
 -uint32_t 32 0x%08x false
 -EGLint 32 0x%08x false
@@ -24610,10 +24610,10 @@ index a7d96ab..578492b 100644
 +GLuint* 32 0x%08x
 +void* 32 0x%08x
 +uint64_t* 32 0x%08x
-diff --git a/android/opengl/system/renderControl_enc/renderControl_client_context.cpp b/android/opengl/system/renderControl_enc/renderControl_client_context.cpp
+diff --git a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_client_context.cpp b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_client_context.cpp
 index 34ae4f8..c314fbc 100644
---- a/android/opengl/system/renderControl_enc/renderControl_client_context.cpp
-+++ b/android/opengl/system/renderControl_enc/renderControl_client_context.cpp
+--- a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_client_context.cpp
++++ b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_client_context.cpp
 @@ -38,15 +38,23 @@ int renderControl_client_context_t::initDispatchByName(void *(*getProc)(const ch
  	rcOpenColorBuffer2 = (rcOpenColorBuffer2_client_proc_t) getProc("rcOpenColorBuffer2", userData);
  	rcCreateClientImage = (rcCreateClientImage_client_proc_t) getProc("rcCreateClientImage", userData);
@@ -24647,10 +24647,10 @@ index 34ae4f8..c314fbc 100644
  	return 0;
  }
  
-diff --git a/android/opengl/system/renderControl_enc/renderControl_client_context.h b/android/opengl/system/renderControl_enc/renderControl_client_context.h
+diff --git a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_client_context.h b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_client_context.h
 index a6408c1..30f8c2d 100644
---- a/android/opengl/system/renderControl_enc/renderControl_client_context.h
-+++ b/android/opengl/system/renderControl_enc/renderControl_client_context.h
+--- a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_client_context.h
++++ b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_client_context.h
 @@ -38,16 +38,24 @@ struct renderControl_client_context_t {
  	rcOpenColorBuffer2_client_proc_t rcOpenColorBuffer2;
  	rcCreateClientImage_client_proc_t rcCreateClientImage;
@@ -24686,10 +24686,10 @@ index a6408c1..30f8c2d 100644
  
  	typedef renderControl_client_context_t *CONTEXT_ACCESSOR_TYPE(void);
  	static void setContextAccessor(CONTEXT_ACCESSOR_TYPE *f);
-diff --git a/android/opengl/system/renderControl_enc/renderControl_client_proc.h b/android/opengl/system/renderControl_enc/renderControl_client_proc.h
+diff --git a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_client_proc.h b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_client_proc.h
 index 565fd12..0101a6e 100644
---- a/android/opengl/system/renderControl_enc/renderControl_client_proc.h
-+++ b/android/opengl/system/renderControl_enc/renderControl_client_proc.h
+--- a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_client_proc.h
++++ b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_client_proc.h
 @@ -37,6 +37,12 @@ typedef int (renderControl_APIENTRY *rcUpdateColorBuffer_client_proc_t) (void *
  typedef int (renderControl_APIENTRY *rcOpenColorBuffer2_client_proc_t) (void * ctx, uint32_t);
  typedef uint32_t (renderControl_APIENTRY *rcCreateClientImage_client_proc_t) (void * ctx, uint32_t, EGLenum, GLuint);
@@ -24712,10 +24712,10 @@ index 565fd12..0101a6e 100644
  
  
  #endif
-diff --git a/android/opengl/system/renderControl_enc/renderControl_enc.cpp b/android/opengl/system/renderControl_enc/renderControl_enc.cpp
+diff --git a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_enc.cpp b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_enc.cpp
 index 4a22b54..b5bb8e9 100644
---- a/android/opengl/system/renderControl_enc/renderControl_enc.cpp
-+++ b/android/opengl/system/renderControl_enc/renderControl_enc.cpp
+--- a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_enc.cpp
++++ b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_enc.cpp
 @@ -2,7 +2,6 @@
  // generated by 'emugen'
  
@@ -25739,10 +25739,10 @@ index 4a22b54..b5bb8e9 100644
 +	this->rcCreateColorBufferDMA = &rcCreateColorBufferDMA_enc;
  }
  
-diff --git a/android/opengl/system/renderControl_enc/renderControl_enc.h b/android/opengl/system/renderControl_enc/renderControl_enc.h
+diff --git a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_enc.h b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_enc.h
 index 628cff3..9c7b45f 100644
---- a/android/opengl/system/renderControl_enc/renderControl_enc.h
-+++ b/android/opengl/system/renderControl_enc/renderControl_enc.h
+--- a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_enc.h
++++ b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_enc.h
 @@ -19,6 +19,7 @@ struct renderControl_encoder_context_t : public renderControl_client_context_t {
  	ChecksumCalculator *m_checksumCalculator;
  
@@ -25753,10 +25753,10 @@ index 628cff3..9c7b45f 100644
 -#endif  // GUARD_renderControl_encoder_context_t
 \ No newline at end of file
 +#endif  // GUARD_renderControl_encoder_context_t
-diff --git a/android/opengl/system/renderControl_enc/renderControl_entry.cpp b/android/opengl/system/renderControl_enc/renderControl_entry.cpp
+diff --git a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_entry.cpp b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_entry.cpp
 index 822bb80..e8d767a 100644
---- a/android/opengl/system/renderControl_enc/renderControl_entry.cpp
-+++ b/android/opengl/system/renderControl_enc/renderControl_entry.cpp
+--- a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_entry.cpp
++++ b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_entry.cpp
 @@ -4,7 +4,6 @@
  #include <stdlib.h>
  #include "renderControl_client_context.h"
@@ -25925,10 +25925,10 @@ index 822bb80..e8d767a 100644
 +	return ctx->rcCreateColorBufferDMA(ctx, width, height, internalFormat, frameworkFormat);
  }
  
-diff --git a/android/opengl/system/renderControl_enc/renderControl_ftable.h b/android/opengl/system/renderControl_enc/renderControl_ftable.h
+diff --git a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_ftable.h b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_ftable.h
 index da81858..6488c01 100644
---- a/android/opengl/system/renderControl_enc/renderControl_ftable.h
-+++ b/android/opengl/system/renderControl_enc/renderControl_ftable.h
+--- a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_ftable.h
++++ b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_ftable.h
 @@ -36,15 +36,23 @@ static const struct _renderControl_funcs_by_name {
  	{"rcOpenColorBuffer2", (void*)rcOpenColorBuffer2},
  	{"rcCreateClientImage", (void*)rcCreateClientImage},
@@ -25962,10 +25962,10 @@ index da81858..6488c01 100644
  };
  static const int renderControl_num_funcs = sizeof(renderControl_funcs_by_name) / sizeof(struct _renderControl_funcs_by_name);
  
-diff --git a/android/opengl/system/renderControl_enc/renderControl_opcodes.h b/android/opengl/system/renderControl_enc/renderControl_opcodes.h
+diff --git a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_opcodes.h b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_opcodes.h
 index e7cf12d..68d44ca 100644
---- a/android/opengl/system/renderControl_enc/renderControl_opcodes.h
-+++ b/android/opengl/system/renderControl_enc/renderControl_opcodes.h
+--- a/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_opcodes.h
++++ b/vendor/anbox/android/opengl/system/renderControl_enc/renderControl_opcodes.h
 @@ -31,16 +31,17 @@
  #define OP_rcOpenColorBuffer2 					10025
  #define OP_rcCreateClientImage 					10026
