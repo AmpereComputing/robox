@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2015 The Android Open Source Project
+* Copyright (C) 2017 The Android Open Source Project
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -13,25 +13,10 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-#ifndef __COMMON_EGL_IMAGE_H
-#define __COMMON_EGL_IMAGE_H
+#include "goldfishHwc2.h"
 
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-#include <GLES/gl.h>
-
-#include <system/window.h>
-
-struct EGLImage_t
-{
-    EGLDisplay dpy;
-    EGLenum target;
-
-    union
-    {
-        android_native_buffer_t *native_buffer;
-        uint32_t host_egl_image;
-    };
-};
-
+// Stub functions if not using HWC2.
+#ifndef USE_HWC2
+extern "C" void surfaceInterface_init() { }
+extern "C" void surfaceInterface_setAsyncModeForWindow(void* window) { }
 #endif

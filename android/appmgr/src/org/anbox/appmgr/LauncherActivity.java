@@ -28,7 +28,6 @@ public final class LauncherActivity extends Activity {
     @Override
     public void onCreate(Bundle info) {
         super.onCreate(info);
-
         Intent intent = new Intent(this, LauncherService.class);
         startService(intent);
 
@@ -36,9 +35,15 @@ public final class LauncherActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+	Intent intent = new Intent(LauncherActivity.this, AppViewActivity.class);
+	startActivity(intent);
+    }
+
+    @Override
     public void onDestroy() {
         Log.i(TAG, "Destroyed launcher activity");
-
         Intent intent = new Intent(this, LauncherService.class);
         stopService(intent);
 

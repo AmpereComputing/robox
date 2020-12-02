@@ -1,7 +1,7 @@
-diff --git a/rootdir/init.rc b/rootdir/init.rc
+diff --git a/system/core/rootdir/init.rc b/system/core/rootdir/init.rc
 index 415d4adb6..dd7312ec7 100644
---- a/rootdir/init.rc
-+++ b/rootdir/init.rc
+--- a/system/core/rootdir/init.rc
++++ b/system/core/rootdir/init.rc
 @@ -298,7 +298,7 @@ on late-init
  on post-fs
      start logd

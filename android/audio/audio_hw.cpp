@@ -178,8 +178,8 @@ static ssize_t out_write(struct audio_stream_out *stream, const void *buffer,
   struct generic_audio_device *adev = out->dev;
 
   pthread_mutex_lock(&adev->lock);
-  if (out->fd >= 0)
-    bytes = write(out->fd, buffer, bytes);
+  //if (out->fd >= 0)
+    //bytes = write(out->fd, buffer, bytes);
   pthread_mutex_unlock(&adev->lock);
   return bytes;
 }

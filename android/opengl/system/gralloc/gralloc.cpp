@@ -982,7 +982,8 @@ static int gralloc_device_open(const hw_module_t* module,
         const_cast<int&>(dev->device.format) = HAL_PIXEL_FORMAT_RGBA_8888;
         const_cast<float&>(dev->device.xdpi) = xdpi;
         const_cast<float&>(dev->device.ydpi) = ydpi;
-        const_cast<float&>(dev->device.fps) = fps;
+        //const_cast<float&>(dev->device.fps) = fps;
+       const_cast<float&>(dev->device.fps) = 30;
         const_cast<int&>(dev->device.minSwapInterval) = min_si;
         const_cast<int&>(dev->device.maxSwapInterval) = max_si;
         *device = &dev->device.common;

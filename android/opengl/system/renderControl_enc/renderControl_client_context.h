@@ -38,16 +38,24 @@ struct renderControl_client_context_t {
 	rcOpenColorBuffer2_client_proc_t rcOpenColorBuffer2;
 	rcCreateClientImage_client_proc_t rcCreateClientImage;
 	rcDestroyClientImage_client_proc_t rcDestroyClientImage;
-	rcSelectChecksumCalculator_client_proc_t rcSelectChecksumCalculator;
-	rcGetNumDisplays_client_proc_t rcGetNumDisplays;
-	rcGetDisplayWidth_client_proc_t rcGetDisplayWidth;
-	rcGetDisplayHeight_client_proc_t rcGetDisplayHeight;
-	rcGetDisplayDpiX_client_proc_t rcGetDisplayDpiX;
-	rcGetDisplayDpiY_client_proc_t rcGetDisplayDpiY;
-	rcGetDisplayVsyncPeriod_client_proc_t rcGetDisplayVsyncPeriod;
-	rcPostLayer_client_proc_t rcPostLayer;
-	rcPostAllLayersDone_client_proc_t rcPostAllLayersDone;
-	 virtual ~renderControl_client_context_t() {}
+//	rcSelectChecksumHelper_client_proc_t rcSelectChecksumHelper;
+//	rcCreateSyncKHR_client_proc_t rcCreateSyncKHR;
+//	rcClientWaitSyncKHR_client_proc_t rcClientWaitSyncKHR;
+//	rcFlushWindowColorBufferAsync_client_proc_t rcFlushWindowColorBufferAsync;
+//	rcDestroySyncKHR_client_proc_t rcDestroySyncKHR;
+//	rcSetPuid_client_proc_t rcSetPuid;
+        rcSelectChecksumCalculator_client_proc_t rcSelectChecksumCalculator;
+        rcGetNumDisplays_client_proc_t rcGetNumDisplays;
+        rcGetDisplayWidth_client_proc_t rcGetDisplayWidth;
+        rcGetDisplayHeight_client_proc_t rcGetDisplayHeight;
+        rcGetDisplayDpiX_client_proc_t rcGetDisplayDpiX;
+        rcGetDisplayDpiY_client_proc_t rcGetDisplayDpiY;
+        rcGetDisplayVsyncPeriod_client_proc_t rcGetDisplayVsyncPeriod;
+        rcPostLayer_client_proc_t rcPostLayer;
+        rcPostAllLayersDone_client_proc_t rcPostAllLayersDone;
+	rcUpdateColorBufferDMA_client_proc_t rcUpdateColorBufferDMA;
+	rcCreateColorBufferDMA_client_proc_t rcCreateColorBufferDMA;
+	virtual ~renderControl_client_context_t() {}
 
 	typedef renderControl_client_context_t *CONTEXT_ACCESSOR_TYPE(void);
 	static void setContextAccessor(CONTEXT_ACCESSOR_TYPE *f);

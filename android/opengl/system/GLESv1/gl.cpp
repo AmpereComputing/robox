@@ -54,7 +54,7 @@ void glEGLImageTargetTexture2DOES(void * self, GLenum target, GLeglImageOES img)
     (void)self;
 
     DBG("glEGLImageTargetTexture2DOES v1 target=%#x img=%p", target, img);
-
+    
     EGLImage_t *image = (EGLImage_t*)img;
 
     if (image->target == EGL_NATIVE_BUFFER_ANDROID) {
@@ -127,12 +127,31 @@ void finish()
     glFinish();
 }
 
+void getIntegerv(unsigned int pname, int* param)
+{
+    glGetIntegerv((GLenum)pname, (GLint*)param);
+}
+
 const GLubyte *my_glGetString (void *self, GLenum name)
 {
     (void)self;
 
-    if (s_egl) {
-        return (const GLubyte*)s_egl->getGLString(name);
+    //see ref in https://www.khronos.org/opengles/sdk/docs/man
+    //name in glGetString can be one of the following five values
+    switch (name) {
+        case GL_VERSION:
+        case GL_VENDOR:
+        case GL_RENDERER:
+        case GL_SHADING_LANGUAGE_VERSION:
+        case GL_EXTENSIONS:
+            if (s_egl) {
+                return (const GLubyte*)s_egl->getGLString(name);
+            }
+            break;
+        default:
+            GET_CONTEXT;
+            ctx->setError(GL_INVALID_ENUM);
+            break;
     }
     return NULL;
 }
@@ -156,6 +175,7 @@ EGLClient_glesInterface * init_emul_gles(EGLClient_eglInterface *eglIface)
         s_gl->getProcAddress = getProcAddress;
         s_gl->finish = finish;
         s_gl->init = init;
+        s_gl->getIntegerv = getIntegerv;
     }
 
     return s_gl;

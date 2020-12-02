@@ -1,7 +1,7 @@
-diff --git a/core/java/android/app/ActivityManagerNative.java b/core/java/android/app/ActivityManagerNative.java
+diff --git a/frameworks/base/core/java/android/app/ActivityManagerNative.java b/frameworks/base/core/java/android/app/ActivityManagerNative.java
 index 50479c8e951..37b70e06e7f 100644
---- a/core/java/android/app/ActivityManagerNative.java
-+++ b/core/java/android/app/ActivityManagerNative.java
+--- a/frameworks/base/core/java/android/app/ActivityManagerNative.java
++++ b/frameworks/base/core/java/android/app/ActivityManagerNative.java
 @@ -5250,6 +5250,9 @@ class ActivityManagerProxy implements IActivityManager
          ConfigurationInfo res = ConfigurationInfo.CREATOR.createFromParcel(reply);
          reply.recycle();
@@ -12,10 +12,10 @@ index 50479c8e951..37b70e06e7f 100644
          return res;
      }
  
-diff --git a/opengl/java/android/opengl/GLSurfaceView.java b/opengl/java/android/opengl/GLSurfaceView.java
+diff --git a/frameworks/base/opengl/java/android/opengl/GLSurfaceView.java b/frameworks/base/opengl/java/android/opengl/GLSurfaceView.java
 index 0f5dd3aa566..f6aecadc954 100644
---- a/opengl/java/android/opengl/GLSurfaceView.java
-+++ b/opengl/java/android/opengl/GLSurfaceView.java
+--- a/frameworks/base/opengl/java/android/opengl/GLSurfaceView.java
++++ b/frameworks/base/opengl/java/android/opengl/GLSurfaceView.java
 @@ -439,8 +439,19 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
       */
      public void setEGLConfigChooser(int redSize, int greenSize, int blueSize,

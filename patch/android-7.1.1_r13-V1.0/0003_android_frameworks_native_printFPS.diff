@@ -1,9 +1,9 @@
-t a/opengl/libs/EGL/eglApi.cpp b/opengl/libs/EGL/eglApi.cpp
+t a/frameworks/native/opengl/libs/EGL/eglApi.cpp b/frameworks/native/opengl/libs/EGL/eglApi.cpp
 old mode 100644
 new mode 100755
 index f41e6e2..8db36dd
---- a/opengl/libs/EGL/eglApi.cpp
-+++ b/opengl/libs/EGL/eglApi.cpp
+--- a/frameworks/native/opengl/libs/EGL/eglApi.cpp
++++ b/frameworks/native/opengl/libs/EGL/eglApi.cpp
 @@ -65,6 +65,35 @@ using namespace android;
  // ----------------------------------------------------------------------------
 

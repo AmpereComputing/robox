@@ -22,3 +22,6 @@ PRODUCT_NAME := anbox_arm64
 PRODUCT_DEVICE := arm64
 PRODUCT_BRAND := Android
 PRODUCT_MODEL := Anbox
+
+WITH_EXAGEAR := true
+include $(wildcard vendor/huawei/exagear/exagear.mk)
