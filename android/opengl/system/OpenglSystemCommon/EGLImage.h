@@ -19,6 +19,7 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <GLES/gl.h>
+
 #include <system/window.h>
 
 struct EGLImage_t

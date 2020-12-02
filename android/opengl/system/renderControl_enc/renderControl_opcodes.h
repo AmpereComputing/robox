@@ -31,16 +31,17 @@
 #define OP_rcOpenColorBuffer2 					10025
 #define OP_rcCreateClientImage 					10026
 #define OP_rcDestroyClientImage 					10027
-#define OP_rcSelectChecksumCalculator 					10028
-#define OP_rcGetNumDisplays 					10029
-#define OP_rcGetDisplayWidth 					10030
-#define OP_rcGetDisplayHeight 					10031
-#define OP_rcGetDisplayDpiX 					10032
-#define OP_rcGetDisplayDpiY 					10033
-#define OP_rcGetDisplayVsyncPeriod 					10034
-#define OP_rcPostLayer 					10035
-#define OP_rcPostAllLayersDone 					10036
-#define OP_last 					10037
-
+#define OP_rcSelectChecksumCalculator                                  10028
+#define OP_rcGetNumDisplays                                    10029
+#define OP_rcGetDisplayWidth                                   10030
+#define OP_rcGetDisplayHeight                                  10031
+#define OP_rcGetDisplayDpiX                                    10032
+#define OP_rcGetDisplayDpiY                                    10033
+#define OP_rcGetDisplayVsyncPeriod                                     10034
+#define OP_rcPostLayer                                         10035
+#define OP_rcPostAllLayersDone                                         10036
+#define OP_rcUpdateColorBufferDMA 					10037
+#define OP_rcCreateColorBufferDMA 					10038
+#define OP_last                                                10039
 
 #endif

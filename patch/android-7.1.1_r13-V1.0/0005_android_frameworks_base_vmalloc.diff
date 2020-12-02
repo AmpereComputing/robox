@@ -1,0 +1,21 @@
+diff -uNr a/frameworks/base/core/jni/android_os_Debug.cpp b/frameworks/base/core/jni/android_os_Debug.cpp
+--- a/frameworks/base/core/jni/android_os_Debug.cpp	2020-01-10 10:53:06.316000000 +0800
++++ b/frameworks/base/core/jni/android_os_Debug.cpp	2020-01-10 17:27:44.084000000 +0800
+@@ -596,6 +596,9 @@
+ }
+ 
+ static long get_allocated_vmalloc_memory() {
++#if 1
++    return 0;
++#else
+     char line[1024];
+     // Ignored tags that don't actually consume memory (ie remappings)
+     static const char* const ignored_tags[] = {
+@@ -628,6 +631,7 @@
+     }
+     fclose(fp);
+     return vmalloc_allocated_size;
++#endif
+ }
+ 
+ enum {

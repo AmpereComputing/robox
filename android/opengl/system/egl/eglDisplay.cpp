@@ -15,7 +15,11 @@
 */
 #include "eglDisplay.h"
 #include "HostConnection.h"
+#include "goldfishHwc2.h"
+
 #include <dlfcn.h>
+
+#include <string>
 
 static const int systemEGLVersionMajor = 1;
 static const int systemEGLVersionMinor = 4;
@@ -28,6 +32,9 @@ static const char systemStaticEGLExtensions[] =
             "EGL_KHR_fence_sync "
             "EGL_KHR_image_base "
             "EGL_KHR_gl_texture_2d_image ";
+
+// extensions to add dynamically depending on host-side support
+static const char kDynamicEGLExtNativeSync[] = "EGL_ANDROID_native_fence_sync ";
 
 static void *s_gles_lib = NULL;
 static void *s_gles2_lib = NULL;
@@ -209,6 +216,20 @@ void eglDisplay::terminate()
 {
     pthread_mutex_lock(&m_lock);
     if (m_initialized) {
+        // Cannot use the for loop in the following code because
+        // eglDestroyContext may erase elements.
+        EGLContextSet::iterator ctxIte = m_contexts.begin();
+        while (ctxIte != m_contexts.end()) {
+            EGLContextSet::iterator ctxToDelete = ctxIte;
+            ctxIte ++;
+            eglDestroyContext(static_cast<EGLDisplay>(this), *ctxToDelete);
+        }
+        EGLSurfaceSet::iterator surfaceIte = m_surfaces.begin();
+        while (surfaceIte != m_surfaces.end()) {
+            EGLSurfaceSet::iterator surfaceToDelete = surfaceIte;
+            surfaceIte ++;
+            eglDestroySurface(static_cast<EGLDisplay>(this), *surfaceToDelete);
+        }
         m_initialized = false;
         delete [] m_configs;
         m_configs = NULL;
@@ -258,14 +279,10 @@ static char *queryHostEGLString(EGLint name)
         if (rcEnc) {
             int n = rcEnc->rcQueryEGLString(rcEnc, name, NULL, 0);
             if (n < 0) {
-                // allocate space for the string with additional
-                // space charachter to be suffixed at the end.
-                char *str = (char *)malloc(-n+2);
+                // allocate space for the string.
+                char *str = (char *)malloc(-n);
                 n = rcEnc->rcQueryEGLString(rcEnc, name, str, -n);
                 if (n > 0) {
-                    // add extra space at end of string which will be
-                    // needed later when filtering the extension list.
-                    strcat(str, " ");
                     return str;
                 }
 
@@ -389,8 +406,28 @@ EGLBoolean eglDisplay::getAttribValue(EGLConfig config, EGLint attribIdx, EGLint
     return EGL_TRUE;
 }
 
+#define EGL_COLOR_COMPONENT_TYPE_EXT 0x3339
+#define EGL_COLOR_COMPONENT_TYPE_FIXED_EXT 0x333A
+
 EGLBoolean eglDisplay::getConfigAttrib(EGLConfig config, EGLint attrib, EGLint * value)
 {
+    if (attrib == EGL_FRAMEBUFFER_TARGET_ANDROID) {
+        *value = EGL_TRUE;
+        return EGL_TRUE;
+    }
+    if (attrib == EGL_COVERAGE_SAMPLES_NV ||
+        attrib == EGL_COVERAGE_BUFFERS_NV) {
+        *value = 0;
+        return EGL_TRUE;
+    }
+    if (attrib == EGL_DEPTH_ENCODING_NV) {
+        *value = EGL_DEPTH_ENCODING_NONE_NV;
+        return EGL_TRUE;
+    }
+    if  (attrib == EGL_COLOR_COMPONENT_TYPE_EXT) {
+        *value = EGL_COLOR_COMPONENT_TYPE_FIXED_EXT;
+        return EGL_TRUE;
+    }
     //Though it seems that valueFor() is thread-safe, we don't take chanses
     pthread_mutex_lock(&m_lock);
     EGLBoolean ret = getAttribValue(config, m_attribs.valueFor(attrib), value);
@@ -483,3 +520,28 @@ EGLBoolean eglDisplay::getConfigGLPixelFormat(EGLConfig config, GLenum * format)
 
     return EGL_TRUE;
 }
+
+void eglDisplay::onCreateContext(EGLContext ctx) {
+    pthread_mutex_lock(&m_ctxLock);
+    m_contexts.insert(ctx);
+    pthread_mutex_unlock(&m_ctxLock);
+}
+
+void eglDisplay::onCreateSurface(EGLSurface surface) {
+    pthread_mutex_lock(&m_surfaceLock);
+    m_surfaces.insert(surface);
+    pthread_mutex_unlock(&m_surfaceLock);
+}
+
+void eglDisplay::onDestroyContext(EGLContext ctx) {
+    pthread_mutex_lock(&m_ctxLock);
+    m_contexts.erase(ctx);
+    pthread_mutex_unlock(&m_ctxLock);
+}
+
+void eglDisplay::onDestroySurface(EGLSurface surface) {
+    pthread_mutex_lock(&m_surfaceLock);
+    m_surfaces.erase(surface);
+    pthread_mutex_unlock(&m_surfaceLock);
+}
+

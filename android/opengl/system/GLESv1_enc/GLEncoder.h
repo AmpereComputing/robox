@@ -30,7 +30,11 @@ public:
     void setClientState(GLClientState *state) {
         m_state = state;
     }
-    void setSharedGroup(GLSharedGroupPtr shared) { m_shared = shared; }
+    void setSharedGroup(GLSharedGroupPtr shared) {
+        m_shared = shared;
+        if (m_state && m_shared.Ptr())
+            m_state->setTextureData(m_shared->getTextureData());
+    }
     void flush() { m_stream->flush(); }
     size_t pixelDataSize(GLsizei width, GLsizei height, GLenum format, GLenum type, int pack);
 
@@ -99,6 +103,13 @@ private:
     glTexParameteriv_client_proc_t m_glTexParameteriv_enc;
     glTexParameterxv_client_proc_t m_glTexParameterxv_enc;
 
+    glGenFramebuffersOES_client_proc_t m_glGenFramebuffersOES_enc;
+    glDeleteFramebuffersOES_client_proc_t m_glDeleteFramebuffersOES_enc;
+    glBindFramebufferOES_client_proc_t m_glBindFramebufferOES_enc;
+    glFramebufferTexture2DOES_client_proc_t m_glFramebufferTexture2DOES_enc;
+    glFramebufferTexture2DMultisampleIMG_client_proc_t m_glFramebufferTexture2DMultisampleIMG_enc;
+    glGetFramebufferAttachmentParameterivOES_client_proc_t m_glGetFramebufferAttachmentParameterivOES_enc;
+
     // statics
     static GLenum s_glGetError(void * self);
     static void s_glGetIntegerv(void *self, GLenum pname, GLint *ptr);
@@ -146,6 +157,13 @@ private:
     static void s_glTexParameterx(void* self, GLenum target, GLenum pname, GLfixed param);
     static void s_glTexParameteriv(void* self, GLenum target, GLenum pname, const GLint* params);
     static void s_glTexParameterxv(void* self, GLenum target, GLenum pname, const GLfixed* params);
+
+    static void s_glGenFramebuffersOES(void* self, GLsizei n, GLuint* framebuffers);
+    static void s_glDeleteFramebuffersOES(void* self, GLsizei n, const GLuint* framebuffers);
+    static void s_glBindFramebufferOES(void* self, GLenum target, GLuint framebuffer);
+    static void s_glFramebufferTexture2DOES(void* self, GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
+    static void s_glFramebufferTexture2DMultisampleIMG(void* self, GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLsizei samples);
+    static void s_glGetFramebufferAttachmentParameterivOES(void* self, GLenum target, GLenum attachment, GLenum pname, GLint* params);
 
 public:
     glEGLImageTargetTexture2DOES_client_proc_t m_glEGLImageTargetTexture2DOES_enc;

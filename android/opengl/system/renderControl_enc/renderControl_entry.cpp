@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include "renderControl_client_context.h"
 
-#ifndef GL_TRUE
 extern "C" {
 	GLint rcGetRendererVersion();
 	EGLint rcGetEGLVersion(EGLint* major, EGLint* minor);
@@ -34,18 +33,26 @@ extern "C" {
 	int rcOpenColorBuffer2(uint32_t colorbuffer);
 	uint32_t rcCreateClientImage(uint32_t context, EGLenum target, GLuint buffer);
 	int rcDestroyClientImage(uint32_t image);
-	void rcSelectChecksumCalculator(uint32_t newProtocol, uint32_t reserved);
-	int rcGetNumDisplays();
-	int rcGetDisplayWidth(uint32_t displayId);
-	int rcGetDisplayHeight(uint32_t displayId);
-	int rcGetDisplayDpiX(uint32_t displayId);
-	int rcGetDisplayDpiY(uint32_t displayId);
-	int rcGetDisplayVsyncPeriod(uint32_t displayId);
-	void rcPostLayer(const char* name, uint32_t colorBuffer, float alpha, int32_t sourceCropLeft, int32_t sourceCropTop, int32_t sourceCropRight, int32_t sourceCropBottom, int32_t displayFrameLeft, int32_t displayFrameTop, int32_t displayFrameRight, int32_t displayFrameBottom);
-	void rcPostAllLayersDone();
+//	void rcSelectChecksumHelper(uint32_t newProtocol, uint32_t reserved);
+//	void rcCreateSyncKHR(EGLenum type, EGLint* attribs, uint32_t num_attribs, int destroy_when_signaled, uint64_t* glsync_out, uint64_t* syncthread_out);
+//	EGLint rcClientWaitSyncKHR(uint64_t sync, EGLint flags, uint64_t timeout);
+//	void rcFlushWindowColorBufferAsync(uint32_t windowSurface);
+//	int rcDestroySyncKHR(uint64_t sync);
+//	void rcSetPuid(uint64_t puid);
+        void rcSelectChecksumCalculator(uint32_t newProtocol, uint32_t reserved);
+        int rcGetNumDisplays();
+        int rcGetDisplayWidth(uint32_t displayId);
+        int rcGetDisplayHeight(uint32_t displayId);
+        int rcGetDisplayDpiX(uint32_t displayId);
+        int rcGetDisplayDpiY(uint32_t displayId);
+        int rcGetDisplayVsyncPeriod(uint32_t displayId);
+        void rcPostLayer(const char* name, uint32_t colorBuffer, float alpha, int32_t sourceCropLeft, int32_t sourceCropTop, int32_t sourceCropRight, int32_t sourceCropBottom, int32_t displayFrameLeft, int32_t displayFrameTop, int32_t displayFrameRight, int32_t displayFrameBottom);
+        void rcPostAllLayersDone();
+
+	int rcUpdateColorBufferDMA(uint32_t colorbuffer, GLint x, GLint y, GLint width, GLint height, GLenum format, GLenum type, void* pixels, uint32_t pixels_size);
+	uint32_t rcCreateColorBufferDMA(uint32_t width, uint32_t height, GLenum internalFormat, int frameworkFormat);
 };
 
-#endif
 #ifndef GET_CONTEXT
 static renderControl_client_context_t::CONTEXT_ACCESSOR_TYPE *getCurrentContext = NULL;
 void renderControl_client_context_t::setContextAccessor(CONTEXT_ACCESSOR_TYPE *f) { getCurrentContext = f; }
@@ -219,58 +226,105 @@ int rcDestroyClientImage(uint32_t image)
 	GET_CONTEXT;
 	return ctx->rcDestroyClientImage(ctx, image);
 }
-
-void rcSelectChecksumCalculator(uint32_t newProtocol, uint32_t reserved)
+/*
+void rcSelectChecksumHelper(uint32_t newProtocol, uint32_t reserved)
 {
 	GET_CONTEXT;
-	ctx->rcSelectChecksumCalculator(ctx, newProtocol, reserved);
+	ctx->rcSelectChecksumHelper(ctx, newProtocol, reserved);
+}
+
+void rcCreateSyncKHR(EGLenum type, EGLint* attribs, uint32_t num_attribs, int destroy_when_signaled, uint64_t* glsync_out, uint64_t* syncthread_out)
+{
+	GET_CONTEXT;
+	ctx->rcCreateSyncKHR(ctx, type, attribs, num_attribs, destroy_when_signaled, glsync_out, syncthread_out);
+}
+
+EGLint rcClientWaitSyncKHR(uint64_t sync, EGLint flags, uint64_t timeout)
+{
+	GET_CONTEXT;
+	return ctx->rcClientWaitSyncKHR(ctx, sync, flags, timeout);
+}
+
+void rcFlushWindowColorBufferAsync(uint32_t windowSurface)
+{
+	GET_CONTEXT;
+	ctx->rcFlushWindowColorBufferAsync(ctx, windowSurface);
+}
+
+int rcDestroySyncKHR(uint64_t sync)
+{
+	GET_CONTEXT;
+	return ctx->rcDestroySyncKHR(ctx, sync);
+}
+
+void rcSetPuid(uint64_t puid)
+{
+	GET_CONTEXT;
+	ctx->rcSetPuid(ctx, puid);
+}
+*/
+void rcSelectChecksumCalculator(uint32_t newProtocol, uint32_t reserved)
+{
+        GET_CONTEXT;
+        ctx->rcSelectChecksumCalculator(ctx, newProtocol, reserved);
 }
 
 int rcGetNumDisplays()
 {
-	GET_CONTEXT;
-	return ctx->rcGetNumDisplays(ctx);
+        GET_CONTEXT;
+        return ctx->rcGetNumDisplays(ctx);
 }
 
 int rcGetDisplayWidth(uint32_t displayId)
 {
-	GET_CONTEXT;
-	return ctx->rcGetDisplayWidth(ctx, displayId);
+        GET_CONTEXT;
+        return ctx->rcGetDisplayWidth(ctx, displayId);
 }
 
 int rcGetDisplayHeight(uint32_t displayId)
 {
-	GET_CONTEXT;
-	return ctx->rcGetDisplayHeight(ctx, displayId);
+        GET_CONTEXT;
+        return ctx->rcGetDisplayHeight(ctx, displayId);
 }
 
 int rcGetDisplayDpiX(uint32_t displayId)
 {
-	GET_CONTEXT;
-	return ctx->rcGetDisplayDpiX(ctx, displayId);
+        GET_CONTEXT;
+        return ctx->rcGetDisplayDpiX(ctx, displayId);
 }
-
 int rcGetDisplayDpiY(uint32_t displayId)
 {
-	GET_CONTEXT;
-	return ctx->rcGetDisplayDpiY(ctx, displayId);
+        GET_CONTEXT;
+        return ctx->rcGetDisplayDpiY(ctx, displayId);
 }
 
 int rcGetDisplayVsyncPeriod(uint32_t displayId)
 {
-	GET_CONTEXT;
-	return ctx->rcGetDisplayVsyncPeriod(ctx, displayId);
+        GET_CONTEXT;
+        return ctx->rcGetDisplayVsyncPeriod(ctx, displayId);
 }
 
 void rcPostLayer(const char* name, uint32_t colorBuffer, float alpha, int32_t sourceCropLeft, int32_t sourceCropTop, int32_t sourceCropRight, int32_t sourceCropBottom, int32_t displayFrameLeft, int32_t displayFrameTop, int32_t displayFrameRight, int32_t displayFrameBottom)
 {
-	GET_CONTEXT;
-	ctx->rcPostLayer(ctx, name, colorBuffer, alpha, sourceCropLeft, sourceCropTop, sourceCropRight, sourceCropBottom, displayFrameLeft, displayFrameTop, displayFrameRight, displayFrameBottom);
+        GET_CONTEXT;
+        ctx->rcPostLayer(ctx, name, colorBuffer, alpha, sourceCropLeft, sourceCropTop, sourceCropRight, sourceCropBottom, displayFrameLeft, displayFrameTop, displayFrameRight, displayFrameBottom);
 }
 
 void rcPostAllLayersDone()
 {
+        GET_CONTEXT;
+        ctx->rcPostAllLayersDone(ctx);
+}
+
+int rcUpdateColorBufferDMA(uint32_t colorbuffer, GLint x, GLint y, GLint width, GLint height, GLenum format, GLenum type, void* pixels, uint32_t pixels_size)
+{
 	GET_CONTEXT;
-	ctx->rcPostAllLayersDone(ctx);
+	return ctx->rcUpdateColorBufferDMA(ctx, colorbuffer, x, y, width, height, format, type, pixels, pixels_size);
+}
+
+uint32_t rcCreateColorBufferDMA(uint32_t width, uint32_t height, GLenum internalFormat, int frameworkFormat)
+{
+	GET_CONTEXT;
+	return ctx->rcCreateColorBufferDMA(ctx, width, height, internalFormat, frameworkFormat);
 }
 

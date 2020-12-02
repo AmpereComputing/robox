@@ -13,8 +13,12 @@ LOCAL_SRC_FILES := \
     egl.cpp \
     ClientAPIExts.cpp
 
-LOCAL_SHARED_LIBRARIES += libdl
+ifeq ($(TARGET_USES_HWC2), true)
+    LOCAL_CFLAGS += -DUSE_HWC2
+    LOCAL_STATIC_LIBRARIES += libsurfaceInterface
+endif
 
+LOCAL_SHARED_LIBRARIES += libdl
 # Used to access the Bionic private OpenGL TLS slot
 LOCAL_C_INCLUDES += bionic/libc/private
 
@@ -34,6 +38,10 @@ LOCAL_SRC_FILES := $(LOCAL_MODULE)
 
 LOCAL_MODULE_PATH := $(TARGET_OUT)/lib/egl
 LOCAL_MODULE_CLASS := ETC
+
+ifeq ($(shell test $(PLATFORM_SDK_VERSION) -lt 19 && echo PreKitkat),PreKitkat)
+    LOCAL_MODULE_TAGS := debug
+endif
 
 include $(BUILD_PREBUILT)
 endif # TARGET_PRODUCT in 'full full_x86 full_mips sdk sdk_x86 sdk_mips google_sdk google_sdk_x86 google_sdk_mips')

@@ -38,15 +38,23 @@ int renderControl_client_context_t::initDispatchByName(void *(*getProc)(const ch
 	rcOpenColorBuffer2 = (rcOpenColorBuffer2_client_proc_t) getProc("rcOpenColorBuffer2", userData);
 	rcCreateClientImage = (rcCreateClientImage_client_proc_t) getProc("rcCreateClientImage", userData);
 	rcDestroyClientImage = (rcDestroyClientImage_client_proc_t) getProc("rcDestroyClientImage", userData);
-	rcSelectChecksumCalculator = (rcSelectChecksumCalculator_client_proc_t) getProc("rcSelectChecksumCalculator", userData);
-	rcGetNumDisplays = (rcGetNumDisplays_client_proc_t) getProc("rcGetNumDisplays", userData);
-	rcGetDisplayWidth = (rcGetDisplayWidth_client_proc_t) getProc("rcGetDisplayWidth", userData);
-	rcGetDisplayHeight = (rcGetDisplayHeight_client_proc_t) getProc("rcGetDisplayHeight", userData);
-	rcGetDisplayDpiX = (rcGetDisplayDpiX_client_proc_t) getProc("rcGetDisplayDpiX", userData);
-	rcGetDisplayDpiY = (rcGetDisplayDpiY_client_proc_t) getProc("rcGetDisplayDpiY", userData);
-	rcGetDisplayVsyncPeriod = (rcGetDisplayVsyncPeriod_client_proc_t) getProc("rcGetDisplayVsyncPeriod", userData);
-	rcPostLayer = (rcPostLayer_client_proc_t) getProc("rcPostLayer", userData);
-	rcPostAllLayersDone = (rcPostAllLayersDone_client_proc_t) getProc("rcPostAllLayersDone", userData);
+//	rcSelectChecksumHelper = (rcSelectChecksumHelper_client_proc_t) getProc("rcSelectChecksumHelper", userData);
+//	rcCreateSyncKHR = (rcCreateSyncKHR_client_proc_t) getProc("rcCreateSyncKHR", userData);
+//	rcClientWaitSyncKHR = (rcClientWaitSyncKHR_client_proc_t) getProc("rcClientWaitSyncKHR", userData);
+//	rcFlushWindowColorBufferAsync = (rcFlushWindowColorBufferAsync_client_proc_t) getProc("rcFlushWindowColorBufferAsync", userData);
+//	rcDestroySyncKHR = (rcDestroySyncKHR_client_proc_t) getProc("rcDestroySyncKHR", userData);
+//	rcSetPuid = (rcSetPuid_client_proc_t) getProc("rcSetPuid", userData);
+        rcSelectChecksumCalculator = (rcSelectChecksumCalculator_client_proc_t) getProc("rcSelectChecksumCalculator", userData);
+        rcGetNumDisplays = (rcGetNumDisplays_client_proc_t) getProc("rcGetNumDisplays", userData);
+        rcGetDisplayWidth = (rcGetDisplayWidth_client_proc_t) getProc("rcGetDisplayWidth", userData);
+        rcGetDisplayHeight = (rcGetDisplayHeight_client_proc_t) getProc("rcGetDisplayHeight", userData);
+        rcGetDisplayDpiX = (rcGetDisplayDpiX_client_proc_t) getProc("rcGetDisplayDpiX", userData);
+        rcGetDisplayDpiY = (rcGetDisplayDpiY_client_proc_t) getProc("rcGetDisplayDpiY", userData);
+        rcGetDisplayVsyncPeriod = (rcGetDisplayVsyncPeriod_client_proc_t) getProc("rcGetDisplayVsyncPeriod", userData);
+        rcPostLayer = (rcPostLayer_client_proc_t) getProc("rcPostLayer", userData);
+        rcPostAllLayersDone = (rcPostAllLayersDone_client_proc_t) getProc("rcPostAllLayersDone", userData);
+	rcUpdateColorBufferDMA = (rcUpdateColorBufferDMA_client_proc_t) getProc("rcUpdateColorBufferDMA", userData);
+	rcCreateColorBufferDMA = (rcCreateColorBufferDMA_client_proc_t) getProc("rcCreateColorBufferDMA", userData);
 	return 0;
 }
 

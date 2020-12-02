@@ -37,6 +37,12 @@ typedef int (renderControl_APIENTRY *rcUpdateColorBuffer_client_proc_t) (void * 
 typedef int (renderControl_APIENTRY *rcOpenColorBuffer2_client_proc_t) (void * ctx, uint32_t);
 typedef uint32_t (renderControl_APIENTRY *rcCreateClientImage_client_proc_t) (void * ctx, uint32_t, EGLenum, GLuint);
 typedef int (renderControl_APIENTRY *rcDestroyClientImage_client_proc_t) (void * ctx, uint32_t);
+//typedef void (renderControl_APIENTRY *rcSelectChecksumHelper_client_proc_t) (void * ctx, uint32_t, uint32_t);
+//typedef void (renderControl_APIENTRY *rcCreateSyncKHR_client_proc_t) (void * ctx, EGLenum, EGLint*, uint32_t, int, uint64_t*, uint64_t*);
+//typedef EGLint (renderControl_APIENTRY *rcClientWaitSyncKHR_client_proc_t) (void * ctx, uint64_t, EGLint, uint64_t);
+//typedef void (renderControl_APIENTRY *rcFlushWindowColorBufferAsync_client_proc_t) (void * ctx, uint32_t);
+//typedef int (renderControl_APIENTRY *rcDestroySyncKHR_client_proc_t) (void * ctx, uint64_t);
+//typedef void (renderControl_APIENTRY *rcSetPuid_client_proc_t) (void * ctx, uint64_t);
 typedef void (renderControl_APIENTRY *rcSelectChecksumCalculator_client_proc_t) (void * ctx, uint32_t, uint32_t);
 typedef int (renderControl_APIENTRY *rcGetNumDisplays_client_proc_t) (void * ctx);
 typedef int (renderControl_APIENTRY *rcGetDisplayWidth_client_proc_t) (void * ctx, uint32_t);
@@ -46,6 +52,8 @@ typedef int (renderControl_APIENTRY *rcGetDisplayDpiY_client_proc_t) (void * ctx
 typedef int (renderControl_APIENTRY *rcGetDisplayVsyncPeriod_client_proc_t) (void * ctx, uint32_t);
 typedef void (renderControl_APIENTRY *rcPostLayer_client_proc_t) (void * ctx, const char*, uint32_t, float, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t);
 typedef void (renderControl_APIENTRY *rcPostAllLayersDone_client_proc_t) (void * ctx);
+typedef int (renderControl_APIENTRY *rcUpdateColorBufferDMA_client_proc_t) (void * ctx, uint32_t, GLint, GLint, GLint, GLint, GLenum, GLenum, void*, uint32_t);
+typedef uint32_t (renderControl_APIENTRY *rcCreateColorBufferDMA_client_proc_t) (void * ctx, uint32_t, uint32_t, GLenum, int);
 
 
 #endif

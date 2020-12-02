@@ -23,9 +23,16 @@
 #include "EGLClientIface.h"
 #include <utils/KeyedVector.h>
 
+#if __cplusplus >= 201103L
+#include <unordered_set>
+#else
+#include <hash_set>
+#endif
+
+
 #include <ui/PixelFormat.h>
 
-#define ATTRIBUTE_NONE -1
+#define ATTRIBUTE_NONE (-1)
 //FIXME: are we in this namespace?
 using namespace android;
 
@@ -54,6 +61,12 @@ public:
     EGLBoolean getConfigNativePixelFormat(EGLConfig config, PixelFormat * format);
 
     void     dumpConfig(EGLConfig config);
+
+    void onCreateContext(EGLContext ctx);
+    void onCreateSurface(EGLSurface surface);
+
+    void onDestroyContext(EGLContext ctx);
+    void onDestroySurface(EGLSurface surface);
 private:
     EGLClient_glesInterface *loadGLESClientAPI(const char *libName,
                                                EGLClient_eglInterface *eglIface,
@@ -84,6 +97,18 @@ private:
     char *m_versionString;
     char *m_vendorString;
     char *m_extensionString;
+
+#if __cplusplus >= 201103L
+    typedef std::unordered_set<EGLContext> EGLContextSet;
+    typedef std::unordered_set<EGLSurface> EGLSurfaceSet;
+#else
+    typedef std::hash_set<EGLContext> EGLContextSet;
+    typedef std::hash_set<EGLSurface> EGLSurfaceSet;
+#endif
+    EGLContextSet m_contexts;
+    EGLSurfaceSet m_surfaces;
+    pthread_mutex_t m_ctxLock;
+    pthread_mutex_t m_surfaceLock;
 };
 
 #endif
