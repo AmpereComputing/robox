@@ -181,13 +181,13 @@ function start_session_manager()
     else
 	windowing="--single-window"
     fi
-
-    cmd="taskset -c 4-7 $SESSIONMANAGER --run-multiple=$instancenum --standalone --experimental $windowing --window-size=720,1280"
+    cmd="taskset -c 4-7 $SESSIONMANAGER --run-multiple=$instancenum --standalone --experimental $windowing --gles-driver=translator --window-size=720,1280"
 
     echo $cmd
     export DISPLAY=$DISPLAY
     export EGL_PLATFORM=x11
     export EGL_LOG_LEVEL="fatal"
+    export $(dbus-launch)
     eval $cmd &
     SESSIONMANAGERPID=$!
 
@@ -257,14 +257,14 @@ function start_docker_container()
 	    fi
 	fi
     done
-
+    sleep 15
     adbport=`expr 2 \* $instancenum`
     adbport=$(($adbport + 5557))
     port=$(($instancenum + 8000))
     cmd="docker run -d -it \
 	   --cap-add=SYS_ADMIN \
 	   --cap-add=NET_ADMIN \
-	   --cap-add=SYS_MODULE \
+           --cap-add=SYS_MODULE \
 	   --cap-add=SYS_NICE \
 	   --cap-add=SYS_TIME \
 	   --cap-add=SYS_TTY_CONFIG \
@@ -278,7 +278,7 @@ function start_docker_container()
 	   --memory="3584M" \
 	   --name instance$DOCKERNAME \
 	   -e PATH=/system/bin:/system/xbin \
-	   --device=dev/binder$instancenum:/dev/binder:rwm \
+	   --device=/dev/binder$instancenum:/dev/binder:rwm \
 	   --device=/dev/ashmem:/dev/ashmem:rwm \
            --device=/dev/fuse:/dev/fuse:rwm \
 	   --volume=$SOCKETDIR/$instancenum/sockets/qemu_pipe:/dev/qemu_pipe \
@@ -290,8 +290,6 @@ function start_docker_container()
 	   --volume=$BINDMOUNTDIR/$instancenum/data:/data:rw \
 	   -p $adbport:5555 \
            android:robox /anbox-init.sh"
-           #android:robox /anbox-init.sh"
-
     debug $cmd
     $cmd &>> $ROBOXALLLOG $DK
     if [[ $? -ne 0 ]]; then
@@ -382,6 +380,11 @@ function start()
     if [[ $? -eq $FAILED ]]; then
 	die
 	return $FAILED
+    fi
+    start_binder_ashmem
+    if [[ $? -eq $FAILED ]]; then
+        die
+        return $FAILED
     fi
 
     start_session_manager
@@ -561,7 +564,7 @@ main ()
 	mkdir -p $ROBOXLOGDIR/$instancenum
     fi
 
-    if [[ $EXECUTIONS -ge 5 ]]; then
+    if [[ $EXECUTIONS -ge 1 ]]; then
 	# BUG: https://github.com/moby/moby/issues/22312
 	warning "Too many stop loops (try restarting dockerd) giving up!"
 	return $FAILED
@@ -593,6 +596,8 @@ main ()
 		warning "Exiting ..."
 		return $FAILED
 	    fi
+	else
+		start_vnc_server
 	fi
 
 	out "Attempting to start instance $instance"
